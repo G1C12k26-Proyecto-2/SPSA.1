@@ -15,9 +15,6 @@ namespace AppLogic
 
             var user = userCrud.RetrieveByUsername<User>(username);
 
-            Console.WriteLine("Input password: " + password);
-            Console.WriteLine("Stored hash: " + user.PasswordHash);
-
             if (user == null || !user.Active)
                 return null;
 
@@ -43,12 +40,6 @@ namespace AppLogic
 
             userCrud.Create(user);
         }
-
-        User IUserManager.ValidateUser(string username, string password)
-        {
-            throw new NotImplementedException();
-        }
-        
     }
 }
 
