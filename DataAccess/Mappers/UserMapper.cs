@@ -26,6 +26,8 @@ namespace DataAccess.Mappers
             user.UserName = row["UserName"].ToString();
             user.PasswordHash = row["PasswordHash"].ToString();
             user.FullName = row["FullName"].ToString();
+            user.Email = row["Email"].ToString(); 
+            user.Rol = row["Rol"].ToString();
 
             return user;
         }
@@ -64,7 +66,9 @@ namespace DataAccess.Mappers
             operation.AddVarcharParam("UserName", user.UserName);
             operation.AddVarcharParam("PasswordHash", user.PasswordHash);
             operation.AddVarcharParam("FullName", user.FullName);
+            operation.AddVarcharParam("Email", user.Email); 
             operation.AddIntParam("Active", user.Active ? 1 : 0);
+            operation.AddVarcharParam("Rol", user.Rol); 
 
             return operation;
         }

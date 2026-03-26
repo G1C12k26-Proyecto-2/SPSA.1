@@ -86,6 +86,19 @@ namespace DataAccess.Crud
                 return default;
 
             return (T)Convert.ChangeType(user, typeof(T));
-        }        
+        }
+
+        public T RetrieveByEmail<T>(string email)
+        {
+            var sqlOperation = new SqlOperation { ProcedureName = "RET_USER_BY_EMAIL" };
+            sqlOperation.AddVarcharParam("EMAIL", email);
+
+            var list = _sqlDao.ExecuteProcedureWithQuery(sqlOperation);
+
+            if (list.Count > 0)
+                return (T)Convert.ChangeType(_mapper.BuildObject(list[0]), typeof(T));
+
+            return default(T);
+        }
     }
 }
