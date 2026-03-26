@@ -23,10 +23,10 @@ namespace AppLogic
             if (!valid)
                 return null;
 
-            return user;
+            return user;    
         }
 
-        public void CreateUser(CreateUserDTO newUser)
+        public void CreateUser(CreateUserDTO newUser, string rol)
         {
             var userCrud = new UserCrud();
 
@@ -34,11 +34,18 @@ namespace AppLogic
             {
                 UserName = newUser.UserName,
                 FullName = newUser.FullName,
+                Email = newUser.Email,
                 Active = true,
+                Rol = rol,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(newUser.Password)
             };
 
             userCrud.Create(user);
+        }
+
+        public void CreateUser(CreateUserDTO newUser)
+        {
+            CreateUser(newUser, "Propietario");
         }
     }
 }

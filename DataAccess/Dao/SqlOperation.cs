@@ -23,7 +23,7 @@ public class SqlOperation
     {
         Parameters.Add(new SqlParameter("@" + parameterName, parameterValue));
     }
-    public void AddDatetimeParam(string parameterName, DateTime parameterValue)
+    public void AddDateTimeParam(string parameterName, DateTime parameterValue)
     {
         Parameters.Add(new SqlParameter("@" + parameterName, parameterValue));
     }

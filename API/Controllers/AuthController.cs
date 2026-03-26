@@ -42,19 +42,49 @@ namespace API.Controllers
                 response.Message = ex.Message;
             }
 
-            return response;
-        }
+            return response;        }
 
-        [HttpPost("CreateUser")]
-        public ApiResponse CreateUser([FromBody] CreateUserDTO newUser)
+           
+
+        [HttpPost("CreateUserWithRole")]
+        public ApiResponse CreateUserWithRole([FromBody] CreateUserDTO newUser)
         {
             var response = new ApiResponse();
 
             try
             {
-                _userManager.CreateUser(newUser);
+                if (newUser.Rol != "Admin" && newUser.Rol != "Funcionario")
+                {
+                    response.Result = "error";
+                    response.Message = "Invalid role";
+                    return response;
+                }
+
+                _userManager.CreateUser(newUser, newUser.Rol);
+
                 response.Result = "ok";
                 response.Message = "User created successfully";
+            }
+            catch (Exception ex)
+            {
+                response.Result = "error";
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
+        [HttpPost("CreatePropietario")]
+        public ApiResponse CreatePropietario([FromBody] CreateUserDTO newUser)
+        {
+            var response = new ApiResponse();
+
+            try
+            {
+                _userManager.CreateUser(newUser, "Propietario");
+
+                response.Result = "ok";
+                response.Message = "Propietario created successfully";
             }
             catch (Exception ex)
             {

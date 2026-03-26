@@ -8,7 +8,7 @@ namespace AppLogic.Interfaces
     public interface IUserManager
     {
         User ValidateUser(string username, string password);
-        void CreateUser(CreateUserDTO newUser);
+        void CreateUser(CreateUserDTO newUser, string rol);
     }
 
 }
