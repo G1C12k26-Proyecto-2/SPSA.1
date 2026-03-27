@@ -1,8 +1,8 @@
 ﻿using AppLogic.Interfaces;
+using AppLogic.Templates;
 using DataAccess.Crud;
 using DTO;
 using System;
-using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -10,28 +10,26 @@ namespace AppLogic
 {
     public class AuthManager : IAuthManager
     {
+        private readonly IEmailService _emailService;
+
+        public AuthManager(IEmailService emailService)
+        {
+            _emailService = emailService;
+        }
+
         public void ForgotPassword(string email)
         {
-            // TODO: Implement ForgotPassword logic
-            throw new NotImplementedException("ForgotPassword is not implemented yet.");
-
-            /*
             var userCrud = new UserCrud();
             var tokenCrud = new PasswordResetTokenCrudFactory();
 
             var user = userCrud.RetrieveByEmail<User>(email);
 
-            // Do NOT reveal if user exists
             if (user == null || !user.Active)
                 return;
 
-            // 1. Generate token
             var token = GenerateToken();
-
-            // 2. Hash token
             var tokenHash = HashToken(token);
 
-            // 3. Save in DB
             var resetToken = new PasswordResetToken
             {
                 UserId = user.Id,
@@ -42,44 +40,90 @@ namespace AppLogic
 
             tokenCrud.Create(resetToken);
 
-            // 4. Send email (you already have Azure email working)
-            var resetLink = $"http://localhost:4200/reset-password?token={token}";
+            var resetLink = $"http://localhost:4200/reset-password?token={Uri.EscapeDataString(token)}";
 
-            EmailService.Send(user.Email, "Reset Password", resetLink);
-            */
+            var emailMessage = AuthEmailTemplateBuilder.BuildPasswordResetEmail(user, resetLink);
+
+            // 📧 Send email with debug safety
+            try
+            {
+                if (string.IsNullOrWhiteSpace(user.Email))
+                    throw new Exception("User email is empty");
+
+                if (string.IsNullOrWhiteSpace(emailMessage.Subject))
+                    throw new Exception("Email subject is empty");
+
+                if (string.IsNullOrWhiteSpace(emailMessage.HtmlBody) &&
+                    string.IsNullOrWhiteSpace(emailMessage.PlainTextBody))
+                    throw new Exception("Email body is empty");
+
+                _emailService.Send(
+                    user.Email,
+                    emailMessage.Subject,
+                    emailMessage.PlainTextBody,
+                    emailMessage.HtmlBody
+                );
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("ForgotPassword email failed: " + ex.Message);
+            }
         }
 
         public void ResetPassword(string token, string newPassword)
         {
-            // TODO: Implement ResetPassword logic
-            throw new NotImplementedException("ResetPassword is not implemented yet.");
-
-            /*
             var tokenCrud = new PasswordResetTokenCrudFactory();
             var userCrud = new UserCrud();
 
-            // 1. Hash incoming token
             var tokenHash = HashToken(token);
-
-            // 2. Get token from DB
             var storedToken = tokenCrud.RetrieveByHash(tokenHash);
 
             if (storedToken == null)
                 throw new Exception("Invalid or expired token");
 
-            // 3. Get user
-            var user = userCrud.RetrieveById<User>(storedToken.UserId);
+            // 🔍 Get user first
+            var users = userCrud.RetrieveById<User>(storedToken.UserId);
 
-            // 4. Update password
-            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
-            userCrud.Update(user);
+            if (users == null || users.Count == 0)
+                throw new Exception("User not found");
 
-            // 5. Mark token as used
+            var user = users[0];
+
+            // 🔐 Update password
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+            userCrud.UpdatePassword(storedToken.UserId, passwordHash);
+
+            // 🧾 Mark token as used
             tokenCrud.Update(storedToken);
-            */
+
+            var emailMessage = AuthEmailTemplateBuilder.BuildPasswordResetSuccessEmail(user);
+
+            // 📧 Send confirmation email with debug safety
+            try
+            {
+                if (string.IsNullOrWhiteSpace(user.Email))
+                    throw new Exception("User email is empty");
+
+                if (string.IsNullOrWhiteSpace(emailMessage.Subject))
+                    throw new Exception("Email subject is empty");
+
+                if (string.IsNullOrWhiteSpace(emailMessage.HtmlBody) &&
+                    string.IsNullOrWhiteSpace(emailMessage.PlainTextBody))
+                    throw new Exception("Email body is empty");
+
+                _emailService.Send(
+                    user.Email,
+                    emailMessage.Subject,
+                    emailMessage.PlainTextBody,
+                    emailMessage.HtmlBody
+                );
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("ResetPassword confirmation email failed: " + ex.Message);
+            }
         }
 
-        // 🔐 Helpers (keep these if you plan to reuse later)
         private string GenerateToken()
         {
             var bytes = RandomNumberGenerator.GetBytes(32);

@@ -74,6 +74,19 @@ namespace DataAccess.Crud
             return resultList;
         }
 
+        public void UpdatePassword(int userId, string passwordHash)
+        {
+            var sqlOperation = new SqlOperation()
+            {
+                ProcedureName = "SP_UPDATE_USER_PASSWORD"
+            };
+
+            sqlOperation.AddIntParam("UserId", userId);
+            sqlOperation.AddVarcharParam("PasswordHash", passwordHash);
+
+            _sqlDao.ExecuteProcedure(sqlOperation);
+        }
+
         // 🔐 Authentication-specific method
         public T RetrieveByUsername<T>(string username)
         {
@@ -90,7 +103,7 @@ namespace DataAccess.Crud
 
         public T RetrieveByEmail<T>(string email)
         {
-            var sqlOperation = new SqlOperation { ProcedureName = "RET_USER_BY_EMAIL" };
+            var sqlOperation = new SqlOperation { ProcedureName = "SP_RET_USER_BY_EMAIL" };
             sqlOperation.AddVarcharParam("EMAIL", email);
 
             var list = _sqlDao.ExecuteProcedureWithQuery(sqlOperation);

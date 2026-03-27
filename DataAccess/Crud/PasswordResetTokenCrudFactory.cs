@@ -1,4 +1,4 @@
-﻿using DataAccess.Dao;
+﻿    using DataAccess.Dao;
 using DTO;
 using System;
 using System.Collections.Generic;
@@ -19,7 +19,7 @@ namespace DataAccess.Crud
 
             var sqlOperation = new SqlOperation()
             {
-                ProcedureName = "sp_CreatePasswordResetToken"
+                ProcedureName = "SP_CREATE_PASSWORD_RESET_TOKEN"
             };
 
             sqlOperation.AddIntParam("UserId", token.UserId);
@@ -35,7 +35,7 @@ namespace DataAccess.Crud
 
             var sqlOperation = new SqlOperation()
             {
-                ProcedureName = "sp_MarkPasswordResetTokenAsUsed"
+                ProcedureName = "SP_MARK_PASSWORD_RESET_TOKEN_AS_USED"
             };
 
             sqlOperation.AddIntParam("Id", token.Id);
@@ -66,7 +66,7 @@ namespace DataAccess.Crud
         {
             var sqlOperation = new SqlOperation()
             {
-                ProcedureName = "sp_GetValidPasswordResetToken"
+                ProcedureName = "SP_GET_VALID_PASSWORD_RESET_TOKEN"
             };
 
             sqlOperation.AddVarcharParam("TokenHash", tokenHash);

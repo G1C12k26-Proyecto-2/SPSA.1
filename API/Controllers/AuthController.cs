@@ -1,6 +1,8 @@
-﻿using AppLogic.Interfaces;
+﻿using AppLogic;
+using AppLogic.Interfaces;
 using DTO;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -11,10 +13,12 @@ namespace API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IUserManager _userManager;
+        private readonly IAuthManager _authManager;
 
-        public AuthController(IUserManager userManager)
+        public AuthController(IUserManager userManager, IAuthManager authManager)
         {
             _userManager = userManager;
+            _authManager = authManager;
         }
 
         [HttpPost("Login")]
@@ -33,7 +37,16 @@ namespace API.Controllers
                     return response;
                 }
 
-                response.Data = user;
+                var safeUser = new UserResponseDTO
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    FullName = user.FullName,
+                    Email = user.Email,
+                    Rol = user.Rol
+                };
+
+                response.Data = safeUser;
                 response.Result = "ok";
             }
             catch (Exception ex)
@@ -42,9 +55,8 @@ namespace API.Controllers
                 response.Message = ex.Message;
             }
 
-            return response;        }
-
-           
+            return response;
+        }
 
         [HttpPost("CreateUserWithRole")]
         public ApiResponse CreateUserWithRole([FromBody] CreateUserDTO newUser)
@@ -93,6 +105,20 @@ namespace API.Controllers
             }
 
             return response;
+        }
+
+        [HttpPost("forgot-password")]
+        public IActionResult ForgotPassword([FromBody] ForgotPasswordRequest request)
+        {
+            _authManager.ForgotPassword(request.Email);
+            return Ok(new { message = "If the email exists, a reset link was sent." });
+        }
+
+        [HttpPost("reset-password")]
+        public IActionResult ResetPassword([FromBody] ResetPasswordDTO request)
+        {
+            _authManager.ResetPassword(request.Token, request.NewPassword);
+            return Ok(new { message = "Password updated successfully" });
         }
     }
 }

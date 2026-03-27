@@ -73,10 +73,22 @@ namespace DataAccess.Mappers
             return operation;
         }
 
+        public SqlOperation GetRetrieveByIdStatement(int pId)
+        {
+            var operation = new SqlOperation
+            {
+                ProcedureName = "SP_GET_USER_BY_ID"
+            };
+
+            operation.AddIntParam("Id", pId);
+
+            return operation;
+        }
+
         // CRUD not implemented yet        
         public SqlOperation GetUpdateStatement(BaseClass dto) => throw new NotImplementedException();
         public SqlOperation GetDeleteStatement(BaseClass dto) => throw new NotImplementedException();
         public SqlOperation GetRetrieveAllStatement() => throw new NotImplementedException();
-        public SqlOperation GetRetrieveByIdStatement(int pId) => throw new NotImplementedException();
+        
     }
 }
