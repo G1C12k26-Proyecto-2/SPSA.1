@@ -24,8 +24,14 @@ namespace DataAccess.Mappers
             user.Id = int.Parse(row["Id"].ToString());
             user.Active = bool.Parse(row["Active"].ToString());
             user.UserName = row["UserName"].ToString();
-            user.PasswordHash = row["PasswordHash"].ToString();
             user.FullName = row["FullName"].ToString();
+            user.Email = row["Email"].ToString();
+            user.Rol = row["Rol"].ToString();
+
+            if (row.ContainsKey("PasswordHash") && row["PasswordHash"] != null)
+            {
+                user.PasswordHash = row["PasswordHash"].ToString();
+            }
 
             return user;
         }
@@ -64,15 +70,55 @@ namespace DataAccess.Mappers
             operation.AddVarcharParam("UserName", user.UserName);
             operation.AddVarcharParam("PasswordHash", user.PasswordHash);
             operation.AddVarcharParam("FullName", user.FullName);
+            operation.AddVarcharParam("Email", user.Email); 
             operation.AddIntParam("Active", user.Active ? 1 : 0);
+            operation.AddVarcharParam("Rol", user.Rol); 
 
             return operation;
         }
 
-        // CRUD not implemented yet        
-        public SqlOperation GetUpdateStatement(BaseClass dto) => throw new NotImplementedException();
+        public SqlOperation GetRetrieveByIdStatement(int pId)
+        {
+            var operation = new SqlOperation
+            {
+                ProcedureName = "SP_GET_USER_BY_ID"
+            };
+
+            operation.AddIntParam("Id", pId);
+
+            return operation;
+        }
+
+        public SqlOperation GetRetrieveAllStatement()
+        {
+            var operation = new SqlOperation
+            {
+                ProcedureName = "SP_GET_ALL_USERS"
+            };
+
+            return operation;
+        }
+
+        public SqlOperation GetUpdateStatement(BaseClass dto)
+        {
+            var user = (User)dto;
+
+            var operation = new SqlOperation
+            {
+                ProcedureName = "SP_UPDATE_USER"
+            };
+
+            operation.AddIntParam("Id", user.Id);
+            operation.AddVarcharParam("UserName", user.UserName);
+            operation.AddVarcharParam("FullName", user.FullName);
+            operation.AddVarcharParam("Email", user.Email);
+            operation.AddIntParam("Active", user.Active ? 1 : 0);
+            operation.AddVarcharParam("Rol", user.Rol);
+
+            return operation;
+        }
         public SqlOperation GetDeleteStatement(BaseClass dto) => throw new NotImplementedException();
-        public SqlOperation GetRetrieveAllStatement() => throw new NotImplementedException();
-        public SqlOperation GetRetrieveByIdStatement(int pId) => throw new NotImplementedException();
+        
+        
     }
 }
