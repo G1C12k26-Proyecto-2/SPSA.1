@@ -40,7 +40,7 @@
 
                         tokenCrud.Create(resetToken);
 
-                        var resetLink = $"http://localhost:4200/reset-password?token={Uri.EscapeDataString(token)}";
+                        var resetLink = $"https://biopagos.azurewebsites.net/Login/ResetPassword?token={Uri.EscapeDataString(token)}";
 
                         var emailMessage = AuthEmailTemplateBuilder.BuildPasswordResetEmail(user, resetLink);
 
