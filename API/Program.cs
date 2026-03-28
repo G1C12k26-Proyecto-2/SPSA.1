@@ -11,8 +11,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<IUserManager, UserManager>();
-builder.Services.AddScoped<IAuthManager, AuthManager>();
-builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddSingleton<IAuthManager, AuthManager>();
+builder.Services.AddSingleton<IEmailService, EmailService>();
 
 builder.Services.AddCors(options =>
 {

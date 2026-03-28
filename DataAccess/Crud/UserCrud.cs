@@ -17,7 +17,6 @@ namespace DataAccess.Crud
             _sqlDao = SqlDao.GetInstance();
         }
 
-
         public override void Create(BaseClass dto)
         {
             var operation = _mapper.GetCreateStatement(dto);
@@ -26,8 +25,8 @@ namespace DataAccess.Crud
 
         public override void Update(BaseClass dto)
         {
-            var operation = _mapper.GetUpdateStatement(dto);
-            _sqlDao.ExecuteProcedure(operation);
+            var sqlOperation = _mapper.GetUpdateStatement(dto);
+            _sqlDao.ExecuteProcedure(sqlOperation);
         }
 
         public override void Delete(BaseClass dto)
@@ -38,21 +37,21 @@ namespace DataAccess.Crud
 
         public override List<T> RetrieveAll<T>()
         {
-            var operation = _mapper.GetRetrieveAllStatement();
-            var results = _sqlDao.ExecuteProcedureWithQuery(operation);
+            var lstResults = new List<T>();
+            var sqlOperation = _mapper.GetRetrieveAllStatement();
+            var lstDict = _sqlDao.ExecuteProcedureWithQuery(sqlOperation);
 
-            var resultList = new List<T>();
-
-            if (results.Count > 0)
+            if (lstDict.Count > 0)
             {
-                var dtoList = _mapper.BuildObjects(results);
-                foreach (var item in dtoList)
+                var objs = _mapper.BuildObjects(lstDict);
+
+                foreach (var obj in objs)
                 {
-                    resultList.Add((T)Convert.ChangeType(item, typeof(T)));
+                    lstResults.Add((T)Convert.ChangeType(obj, typeof(T)));
                 }
             }
 
-            return resultList;
+            return lstResults;
         }
 
         public override List<T> RetrieveById<T>(int pId)
@@ -87,7 +86,6 @@ namespace DataAccess.Crud
             _sqlDao.ExecuteProcedure(sqlOperation);
         }
 
-        // 🔐 Authentication-specific method
         public T RetrieveByUsername<T>(string username)
         {
             var operation = _mapper.GetRetrieveByUsernameStatement(username);

@@ -1,9 +1,9 @@
-﻿using AppLogic;
-using AppLogic.Interfaces;
+﻿using AppLogic.Interfaces;
 using DTO;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace API.Controllers
 {
@@ -37,7 +37,7 @@ namespace API.Controllers
                     return response;
                 }
 
-                var safeUser = new UserResponseDTO
+                response.Data = new UserResponseDTO
                 {
                     Id = user.Id,
                     UserName = user.UserName,
@@ -45,8 +45,6 @@ namespace API.Controllers
                     Email = user.Email,
                     Rol = user.Rol
                 };
-
-                response.Data = safeUser;
                 response.Result = "ok";
             }
             catch (Exception ex)
@@ -73,7 +71,6 @@ namespace API.Controllers
                 }
 
                 _userManager.CreateUser(newUser, newUser.Rol);
-
                 response.Result = "ok";
                 response.Message = "User created successfully";
             }
@@ -94,7 +91,6 @@ namespace API.Controllers
             try
             {
                 _userManager.CreateUser(newUser, "Propietario");
-
                 response.Result = "ok";
                 response.Message = "Propietario created successfully";
             }
@@ -107,18 +103,93 @@ namespace API.Controllers
             return response;
         }
 
-        [HttpPost("forgot-password")]
-        public IActionResult ForgotPassword([FromBody] ForgotPasswordRequest request)
+        [HttpPost("ForgotPassword")]
+        public ApiResponse ForgotPassword([FromBody] ForgotPasswordRequest request)
         {
-            _authManager.ForgotPassword(request.Email);
-            return Ok(new { message = "If the email exists, a reset link was sent." });
+            var response = new ApiResponse();
+
+            try
+            {
+                _authManager.ForgotPassword(request.Email);
+                response.Result = "ok";
+                response.Message = "If the email exists, a reset link was sent.";
+            }
+            catch (Exception ex)
+            {
+                response.Result = "error";
+                response.Message = ex.Message;
+            }
+
+            return response;
         }
 
-        [HttpPost("reset-password")]
-        public IActionResult ResetPassword([FromBody] ResetPasswordDTO request)
+        [HttpPost("ResetPassword")]
+        public ApiResponse ResetPassword([FromBody] ResetPasswordDTO request)
         {
-            _authManager.ResetPassword(request.Token, request.NewPassword);
-            return Ok(new { message = "Password updated successfully" });
+            var response = new ApiResponse();
+
+            try
+            {
+                _authManager.ResetPassword(request.Token, request.NewPassword);
+                response.Result = "ok";
+                response.Message = "Password updated successfully";
+            }
+            catch (Exception ex)
+            {
+                response.Result = "error";
+                response.Message = ex.Message;
+            }
+
+            return response;
         }
+
+        [HttpGet("GetAllUsers")]
+        public ApiResponse GetAllUsers()
+        {
+            var response = new ApiResponse();
+
+            try
+            {
+                var users = _userManager.RetrieveAllUsers();
+
+                response.Data = users.Select(user => new UserResponseDTO
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    FullName = user.FullName,
+                    Email = user.Email,
+                    Rol = user.Rol
+                }).ToList();
+
+                response.Result = "ok";
+            }
+            catch (Exception ex)
+            {
+                response.Result = "error";
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
+        [HttpPut("UpdateUser")]
+        public ApiResponse UpdateUser([FromBody] UpdateUserDTO updatedUser)
+        {
+            var response = new ApiResponse();
+
+            try
+            {
+                _userManager.UpdateUser(updatedUser);
+                response.Result = "ok";
+                response.Message = "User updated successfully";
+            }
+            catch (Exception ex)
+            {
+                response.Result = "error";
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }       
     }
 }

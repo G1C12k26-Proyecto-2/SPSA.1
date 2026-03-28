@@ -226,23 +226,385 @@ Si usted no solicitó este cambio, puede ignorar este correo.
             {
                 Subject = "Su contraseña fue restablecida",
                 PlainTextBody = $@"
-Hola {user.FullName},
+    Hola {user.FullName},
 
-Le confirmamos que la contraseña de su cuenta ha sido restablecida exitosamente.
+    Le confirmamos que la contraseña de su cuenta ha sido restablecida exitosamente.
 
-Si usted no realizó este cambio, comuníquese con soporte inmediatamente.
-",
+    Si usted no realizó este cambio, comuníquese con soporte inmediatamente.
+    ",
                 HtmlBody = $@"
-<html>
-<body style='font-family:Arial,sans-serif;'>
-    <h2>Contraseña actualizada</h2>
-    <p>Hola {user.FullName},</p>
-    <p>Le confirmamos que la contraseña de su cuenta ha sido restablecida exitosamente.</p>
-    <p>Si usted no realizó este cambio, comuníquese con soporte inmediatamente.</p>
+<!DOCTYPE html>
+<html lang=""es"" xmlns=""http://www.w3.org/1999/xhtml"">
+<head>
+  <meta charset=""utf-8"" />
+  <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"" />
+  <meta http-equiv=""X-UA-Compatible"" content=""IE=edge"" />
+  <title>BioPagos - Contraseña restablecida</title>
+</head>
+<body style=""margin:0;padding:0;background-color:#f4f1eb;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;"">
+
+  <table role=""presentation"" width=""100%"" cellpadding=""0"" cellspacing=""0"" border=""0"" style=""background-color:#f4f1eb;"">
+    <tr>
+      <td align=""center"" style=""padding:40px 16px;"">
+
+        <table role=""presentation"" width=""600"" cellpadding=""0"" cellspacing=""0"" border=""0"" style=""max-width:600px;width:100%;background-color:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 16px rgba(13,43,26,0.06);"">
+
+          <tr>
+            <td style=""height:4px;background:linear-gradient(90deg,#1e5c38,#2d8653,#4caf7d);font-size:0;line-height:0;"">&nbsp;</td>
+          </tr>
+
+          <tr>
+            <td style=""padding:36px 48px 28px;"">
+              <table role=""presentation"" cellpadding=""0"" cellspacing=""0"" border=""0"">
+                <tr>
+                  <td style=""width:40px;height:40px;background-color:#2d8653;border-radius:10px;text-align:center;vertical-align:middle;"">
+                    <span style=""color:#ffffff;font-size:18px;font-weight:bold;"">&#128274;</span>
+                  </td>
+                  <td style=""padding-left:14px;"">
+                    <span style=""font-size:24px;font-weight:700;color:#0d2b1a;letter-spacing:-0.5px;"">Bio<span style=""color:#2d8653;font-style:italic;"">Pagos</span></span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td style=""padding:0 48px;"">
+              <div style=""height:1px;background-color:#e8e4df;""></div>
+            </td>
+          </tr>
+
+          <tr>
+            <td style=""padding:32px 48px 0;"">
+              <h1 style=""margin:0 0 8px;font-size:22px;font-weight:700;color:#0d2b1a;line-height:1.3;"">
+                Contraseña restablecida
+              </h1>
+              <p style=""margin:0;font-size:15px;color:#5c6b60;line-height:1.7;"">
+                Hola <strong style=""color:#0d2b1a;"">{user.FullName}</strong>,
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style=""padding:20px 48px 0;"">
+              <p style=""margin:0;font-size:15px;color:#5c6b60;line-height:1.75;"">
+                Le confirmamos que la contraseña de su cuenta en <strong style=""color:#0d2b1a;"">BioPagos</strong> ha sido restablecida exitosamente.
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style=""padding:16px 48px 0;"">
+              <p style=""margin:0;font-size:15px;color:#5c6b60;line-height:1.75;"">
+                Si usted no realizó este cambio, comuníquese con soporte inmediatamente.
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style=""padding:32px 48px 0;"">
+              <p style=""margin:0;font-size:14px;color:#0d2b1a;font-weight:600;"">
+                El equipo de BioPagos
+              </p>
+              <p style=""margin:4px 0 0;font-size:12px;color:#8a9a8e;"">
+                FONAFIFO · SINAC · Costa Rica
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style=""height:40px;""></td>
+          </tr>
+
+          <tr>
+            <td style=""height:4px;background:linear-gradient(90deg,#4caf7d,#2d8653,#1e5c38);font-size:0;line-height:0;"">&nbsp;</td>
+          </tr>
+        </table>
+
+        <table role=""presentation"" width=""600"" cellpadding=""0"" cellspacing=""0"" border=""0"" style=""max-width:600px;width:100%;"">
+          <tr>
+            <td style=""padding:28px 48px;text-align:center;"">
+              <p style=""margin:0;font-size:12px;color:#8a9a8e;line-height:1.8;"">
+                Sistema de Gestión de Pagos por Servicios Ambientales<br>
+                FONAFIFO · SINAC · Costa Rica
+              </p>
+              <p style=""margin:12px 0 0;font-size:11px;color:#b8c4bc;"">
+                © 2026 BioPagos. Todos los derechos reservados.
+              </p>
+            </td>
+          </tr>
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
 </body>
 </html>"
             };
         }
+
+        public static EmailMessage BuildUserCreatedEmail(User user)
+        {
+            return new EmailMessage
+            {
+                Subject = "Su cuenta ha sido creada",
+
+                PlainTextBody = $@"
+Hola {user.FullName},
+
+Le informamos que su cuenta en BioPagos ha sido creada exitosamente.
+
+Detalle de la cuenta:
+- Nombre de usuario: {user.UserName}
+- Correo: {user.Email}
+- Rol: {user.Rol}
+
+Si usted no reconoce esta acción, comuníquese con soporte.
+",
+
+                HtmlBody = $@"
+<!DOCTYPE html>
+<html lang=""es"" xmlns=""http://www.w3.org/1999/xhtml"">
+<head>
+  <meta charset=""utf-8"" />
+  <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"" />
+  <meta http-equiv=""X-UA-Compatible"" content=""IE=edge"" />
+  <title>BioPagos - Cuenta creada</title>
+</head>
+<body style=""margin:0;padding:0;background-color:#f4f1eb;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;"">
+
+  <table role=""presentation"" width=""100%"" cellpadding=""0"" cellspacing=""0"" border=""0"" style=""background-color:#f4f1eb;"">
+    <tr>
+      <td align=""center"" style=""padding:40px 16px;"">
+
+        <table role=""presentation"" width=""600"" cellpadding=""0"" cellspacing=""0"" border=""0"" style=""max-width:600px;width:100%;background-color:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 16px rgba(13,43,26,0.06);"">
+
+          <tr>
+            <td style=""height:4px;background:linear-gradient(90deg,#1e5c38,#2d8653,#4caf7d);font-size:0;line-height:0;"">&nbsp;</td>
+          </tr>
+
+          <tr>
+            <td style=""padding:36px 48px 28px;"">
+              <table role=""presentation"" cellpadding=""0"" cellspacing=""0"" border=""0"">
+                <tr>
+                  <td style=""width:40px;height:40px;background-color:#2d8653;border-radius:10px;text-align:center;vertical-align:middle;"">
+                    <span style=""color:#ffffff;font-size:18px;font-weight:bold;"">&#128100;</span>
+                  </td>
+                  <td style=""padding-left:14px;"">
+                    <span style=""font-size:24px;font-weight:700;color:#0d2b1a;letter-spacing:-0.5px;"">Bio<span style=""color:#2d8653;font-style:italic;"">Pagos</span></span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td style=""padding:0 48px;"">
+              <div style=""height:1px;background-color:#e8e4df;""></div>
+            </td>
+          </tr>
+
+          <tr>
+            <td style=""padding:32px 48px 0;"">
+              <h1 style=""margin:0 0 8px;font-size:22px;font-weight:700;color:#0d2b1a;line-height:1.3;"">
+                Cuenta creada exitosamente
+              </h1>
+              <p style=""margin:0;font-size:15px;color:#5c6b60;line-height:1.7;"">
+                Hola <strong style=""color:#0d2b1a;"">{user.FullName}</strong>,
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style=""padding:20px 48px 0;"">
+              <p style=""margin:0;font-size:15px;color:#5c6b60;line-height:1.75;"">
+                Le informamos que su cuenta en <strong style=""color:#0d2b1a;"">BioPagos</strong> ha sido creada exitosamente.
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style=""padding:24px 48px 0;"">
+              <table role=""presentation"" cellpadding=""0"" cellspacing=""0"" border=""0"" width=""100%"">
+                <tr>
+                  <td style=""font-size:13px;font-weight:700;color:#0d2b1a;padding:6px 0;"">Usuario:</td>
+                  <td style=""font-size:13px;color:#5c6b60;text-align:right;padding:6px 0;"">{user.UserName}</td>
+                </tr>
+                <tr>
+                  <td style=""font-size:13px;font-weight:700;color:#0d2b1a;padding:6px 0;"">Correo:</td>
+                  <td style=""font-size:13px;color:#5c6b60;text-align:right;padding:6px 0;"">{user.Email}</td>
+                </tr>
+                <tr>
+                  <td style=""font-size:13px;font-weight:700;color:#0d2b1a;padding:6px 0;"">Rol:</td>
+                  <td style=""font-size:13px;color:#5c6b60;text-align:right;padding:6px 0;"">{user.Rol}</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td style=""padding:24px 48px 0;"">
+              <p style=""margin:0;font-size:14px;color:#0d2b1a;font-weight:600;"">
+                El equipo de BioPagos
+              </p>
+              <p style=""margin:4px 0 0;font-size:12px;color:#8a9a8e;"">
+                FONAFIFO · SINAC · Costa Rica
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style=""height:40px;""></td>
+          </tr>
+
+          <tr>
+            <td style=""height:4px;background:linear-gradient(90deg,#4caf7d,#2d8653,#1e5c38);font-size:0;line-height:0;"">&nbsp;</td>
+          </tr>
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>"
+            };
+        }
+
+        public static EmailMessage BuildUserUpdatedEmail(User user)
+        {
+            return new EmailMessage
+            {
+                Subject = "Su cuenta ha sido actualizada",
+
+                PlainTextBody = $@"
+Hola {user.FullName},
+
+Le informamos que la información de su cuenta en BioPagos ha sido actualizada.
+
+Detalle actual:
+- Nombre de usuario: {user.UserName}
+- Correo: {user.Email}
+- Rol: {user.Rol}
+- Estado: {(user.Active ? "Activo" : "Inactivo")}
+
+Si usted no reconoce esta acción, comuníquese con soporte.
+",
+
+                HtmlBody = $@"
+<!DOCTYPE html>
+<html lang=""es"" xmlns=""http://www.w3.org/1999/xhtml"">
+<head>
+  <meta charset=""utf-8"" />
+  <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"" />
+  <meta http-equiv=""X-UA-Compatible"" content=""IE=edge"" />
+  <title>BioPagos - Cuenta actualizada</title>
+</head>
+<body style=""margin:0;padding:0;background-color:#f4f1eb;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;"">
+
+  <table role=""presentation"" width=""100%"" cellpadding=""0"" cellspacing=""0"" border=""0"" style=""background-color:#f4f1eb;"">
+    <tr>
+      <td align=""center"" style=""padding:40px 16px;"">
+
+        <table role=""presentation"" width=""600"" cellpadding=""0"" cellspacing=""0"" border=""0"" style=""max-width:600px;width:100%;background-color:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 16px rgba(13,43,26,0.06);"">
+
+          <tr>
+            <td style=""height:4px;background:linear-gradient(90deg,#1e5c38,#2d8653,#4caf7d);font-size:0;line-height:0;"">&nbsp;</td>
+          </tr>
+
+          <tr>
+            <td style=""padding:36px 48px 28px;"">
+              <table role=""presentation"" cellpadding=""0"" cellspacing=""0"" border=""0"">
+                <tr>
+                  <td style=""width:40px;height:40px;background-color:#2d8653;border-radius:10px;text-align:center;vertical-align:middle;"">
+                    <span style=""color:#ffffff;font-size:18px;font-weight:bold;"">&#9998;</span>
+                  </td>
+                  <td style=""padding-left:14px;"">
+                    <span style=""font-size:24px;font-weight:700;color:#0d2b1a;letter-spacing:-0.5px;"">Bio<span style=""color:#2d8653;font-style:italic;"">Pagos</span></span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td style=""padding:0 48px;"">
+              <div style=""height:1px;background-color:#e8e4df;""></div>
+            </td>
+          </tr>
+
+          <tr>
+            <td style=""padding:32px 48px 0;"">
+              <h1 style=""margin:0 0 8px;font-size:22px;font-weight:700;color:#0d2b1a;line-height:1.3;"">
+                Cuenta actualizada
+              </h1>
+              <p style=""margin:0;font-size:15px;color:#5c6b60;line-height:1.7;"">
+                Hola <strong style=""color:#0d2b1a;"">{user.FullName}</strong>,
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style=""padding:20px 48px 0;"">
+              <p style=""margin:0;font-size:15px;color:#5c6b60;line-height:1.75;"">
+                Le informamos que la información de su cuenta en <strong style=""color:#0d2b1a;"">BioPagos</strong> ha sido actualizada.
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style=""padding:24px 48px 0;"">
+              <table role=""presentation"" cellpadding=""0"" cellspacing=""0"" border=""0"" width=""100%"">
+                <tr>
+                  <td style=""font-size:13px;font-weight:700;color:#0d2b1a;padding:6px 0;"">Usuario:</td>
+                  <td style=""font-size:13px;color:#5c6b60;text-align:right;padding:6px 0;"">{user.UserName}</td>
+                </tr>
+                <tr>
+                  <td style=""font-size:13px;font-weight:700;color:#0d2b1a;padding:6px 0;"">Correo:</td>
+                  <td style=""font-size:13px;color:#5c6b60;text-align:right;padding:6px 0;"">{user.Email}</td>
+                </tr>
+                <tr>
+                  <td style=""font-size:13px;font-weight:700;color:#0d2b1a;padding:6px 0;"">Rol:</td>
+                  <td style=""font-size:13px;color:#5c6b60;text-align:right;padding:6px 0;"">{user.Rol}</td>
+                </tr>
+                <tr>
+                  <td style=""font-size:13px;font-weight:700;color:#0d2b1a;padding:6px 0;"">Estado:</td>
+                  <td style=""font-size:13px;color:#5c6b60;text-align:right;padding:6px 0;"">{(user.Active ? "Activo" : "Inactivo")}</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td style=""padding:24px 48px 0;"">
+              <p style=""margin:0;font-size:14px;color:#0d2b1a;font-weight:600;"">
+                El equipo de BioPagos
+              </p>
+              <p style=""margin:4px 0 0;font-size:12px;color:#8a9a8e;"">
+                FONAFIFO · SINAC · Costa Rica
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style=""height:40px;""></td>
+          </tr>
+
+          <tr>
+            <td style=""height:4px;background:linear-gradient(90deg,#4caf7d,#2d8653,#1e5c38);font-size:0;line-height:0;"">&nbsp;</td>
+          </tr>
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>"
+            };
+        }
+
     }
 }
     
