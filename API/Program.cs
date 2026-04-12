@@ -1,10 +1,17 @@
+using API.Config;
+using API.Services;
 using AppLogic;
 using AppLogic.Interfaces;
-using API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 // Add services to the container.
+
+builder.Services.Configure<GoogleMapsOptions>(
+    builder.Configuration.GetSection("GoogleMaps"));
+
+builder.Services.AddHttpClient();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -13,6 +20,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IUserManager, UserManager>();
 builder.Services.AddSingleton<IAuthManager, AuthManager>();
 builder.Services.AddSingleton<IEmailService, EmailService>();
+builder.Services.AddHttpClient<GoogleMapsService>();
 
 builder.Services.AddCors(options =>
 {
