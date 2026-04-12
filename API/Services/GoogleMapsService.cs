@@ -42,7 +42,7 @@ namespace API.Services
 
             return new LocationDTO
             {
-                FormattedAddress = result.GetProperty("formatted_address").GetString() ?? "",
+                Address = result.GetProperty("formatted_address").GetString() ?? "",
                 Latitude = location.GetProperty("lat").GetDecimal(),
                 Longitude = location.GetProperty("lng").GetDecimal(),
                 PlaceId = result.GetProperty("place_id").GetString() ?? ""
@@ -70,7 +70,7 @@ namespace API.Services
 
             return new LocationDTO
             {
-                FormattedAddress = result.GetProperty("formatted_address").GetString() ?? "",
+                Address = result.GetProperty("formatted_address").GetString() ?? "",
                 Latitude = lat,
                 Longitude = lng,
                 PlaceId = result.GetProperty("place_id").GetString() ?? ""
