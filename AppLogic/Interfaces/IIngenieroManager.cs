@@ -1,0 +1,14 @@
+﻿using DTO.Ingeniero;
+using DTO.Ingeniero.Solicitud;
+using System.Threading.Tasks;
+
+namespace AppLogic.Interfaces
+{
+    public interface IIngenieroManager
+    {
+        Task<IngenieroDashboardDTO> GetDashboardAsync(int ingenieroId);
+        Task<DetalleSolicitudCompletoDTO> GetDetalleSolicitudCompletoAsync(int idSolicitud);
+        Task<AgendaCompletaDTO> GetAgendaCompletaAsync(int ingenieroId, int anio, int mes);
+        Task<List<VisitaDiaDTO>> GetVisitasDiaAsync(int ingenieroId, DateTime fecha);
+    }
+}

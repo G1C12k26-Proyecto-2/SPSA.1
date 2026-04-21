@@ -1,6 +1,7 @@
+using API.Services;
 using AppLogic;
 using AppLogic.Interfaces;
-using API.Services;
+using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,20 +9,33 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
+// Configurar Swagger
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "PSA API",
+        Version = "v1",
+        Description = "API del Sistema de Pago por Servicios Ambientales"
+    });
+});
+
+// Registrar servicios
 builder.Services.AddSingleton<IUserManager, UserManager>();
 builder.Services.AddSingleton<IAuthManager, AuthManager>();
 builder.Services.AddSingleton<IEmailService, EmailService>();
+builder.Services.AddSingleton<IIngenieroManager, IngenieroManager>();
 
+// Configurar CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "DemoPolicy",
         policy =>
         {
-            policy.AllowAnyOrigin(); //mypage.com, www.mypage.com, localhost:3000, etc
-            policy.AllowAnyMethod(); //post, get, put, delete, etc
-            policy.AllowAnyHeader(); //application/json, aplication/xml, etc
+            policy.AllowAnyOrigin();
+            policy.AllowAnyMethod();
+            policy.AllowAnyHeader();
         });
 });
 
@@ -31,24 +45,25 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "PSA API v1");
+        c.RoutePrefix = "swagger";
+    });
 }
 else
 {
     app.UseSwagger();
-    app.UseSwaggerUI(options =>
+    app.UseSwaggerUI(c =>
     {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-        options.RoutePrefix = string.Empty;
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "PSA API v1");
+        c.RoutePrefix = "swagger";
     });
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
-app.UseCors();
+app.UseCors("DemoPolicy");
 
 app.Run();
