@@ -31,9 +31,9 @@ builder.Services.AddSwaggerGen(c =>
 // Registrar servicios
 builder.Services.AddSingleton<IUserManager, UserManager>();
 builder.Services.AddSingleton<IAuthManager, AuthManager>();
-builder.Services.AddSingleton<IEmailService, EmailService>();
+builder.Services.AddSingleton<AppLogic.Interfaces.IEmailService, EmailService>();
 builder.Services.AddSingleton<IIngenieroManager, IngenieroManager>();
-builder.Services.AddSingleton<ICloudinaryService, CloudinaryService>();
+builder.Services.AddSingleton<AppLogic.Interfaces.ICloudinaryService, CloudinaryService>();
 
 
 

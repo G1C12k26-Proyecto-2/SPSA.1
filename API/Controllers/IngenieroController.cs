@@ -14,13 +14,10 @@ namespace API.Controllers
     public class IngenieroController : ControllerBase
     {
         private readonly IIngenieroManager _ingenieroManager;
-        private readonly ICloudinaryService _cloudinaryService;  // ← Agregar
 
-        // Modificar constructor
-        public IngenieroController(ICloudinaryService cloudinaryService)  
+        public IngenieroController(IIngenieroManager ingenieroManager)
         {
-            _ingenieroManager = new IngenieroManager(cloudinaryService);  
-            _cloudinaryService = cloudinaryService;
+            _ingenieroManager = ingenieroManager;
         }
 
         [HttpGet("Ingeniero/{ingenieroId}")]
@@ -259,8 +256,7 @@ namespace API.Controllers
         {
             try
             {
-                int ingenieroId = 57; // SE DEBE BORRAR - Obtener del token
-
+                int ingenieroId = 57;
                 var resultado = await _ingenieroManager.GuardarRealizarVisitaAsync(ingenieroId, request);
 
                 return Ok(new ApiResponse

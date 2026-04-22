@@ -5,17 +5,15 @@ using DTO.Ingeniero;
 using DTO.Ingeniero.RealizarVisita;
 using System;
 using System.Threading.Tasks;
-using AppLogic.Interfaces;
 
 namespace AppLogic
 {
     public class IngenieroManager : IIngenieroManager
     {
         private readonly IngenieroCrud _ingenieroCrud;
-        private readonly ICloudinaryService _cloudinaryService;  // ← Agregar
+        private readonly ICloudinaryService _cloudinaryService;
 
-        // Modificar constructor
-        public IngenieroManager(ICloudinaryService cloudinaryService)  // ← Inyectar
+        public IngenieroManager(ICloudinaryService cloudinaryService)
         {
             _ingenieroCrud = new IngenieroCrud();
             _cloudinaryService = cloudinaryService;
@@ -120,7 +118,7 @@ namespace AppLogic
         {
             try
             {
-                // 1. Guardar la evaluación
+                // 1. Guardar la evaluación (SP_UPSERT_DETALLE_SOLICITUD)
                 var guardado = await Task.Run(() => _ingenieroCrud.GuardarRealizarVisita(ingenieroId, request));
 
                 // 2. Procesar las fotos si existen
@@ -137,8 +135,14 @@ namespace AppLogic
                                 $"solicitudes/{request.IdSolicitud}"
                             );
 
-                            // Guardar URL en BD
-                            await GuardarFotoEnBD(request.IdSolicitud, imageUrl, foto.NombreArchivo, foto.TipoArchivo, ingenieroId);
+                            // Guardar en BD usando el CRUD
+                            _ingenieroCrud.GuardarFotoSolicitud(
+                                request.IdSolicitud,
+                                ingenieroId,
+                                imageUrl,
+                                foto.NombreArchivo,
+                                foto.TipoArchivo
+                            );
                         }
                     }
                 }
@@ -146,9 +150,7 @@ namespace AppLogic
                 return new RealizarVisitaResponseDTO
                 {
                     Exito = true,
-                    Mensaje = request.CalificaParaPago == "Aprobado"
-                        ? "Solicitud aprobada exitosamente"
-                        : "Solicitud rechazada",
+                    Mensaje = request.CalificaParaPago == "Aprobado" ? "Solicitud aprobada exitosamente" : "Solicitud rechazada",
                     IdSolicitud = request.IdSolicitud,
                     NuevoEstado = request.CalificaParaPago == "Aprobado" ? "Aprobada" : "Rechazada"
                 };
@@ -157,22 +159,6 @@ namespace AppLogic
             {
                 throw new Exception($"Error al guardar: {ex.Message}", ex);
             }
-        }
-
-        private async Task GuardarFotoEnBD(int idSolicitud, string url, string nombreArchivo, string tipoArchivo, int idIngeniero)
-        {
-            var operation = new SqlOperation
-            {
-                ProcedureName = "SP_GUARDAR_FOTO_SOLICITUD"
-            };
-            operation.AddIntParam("IdSolicitud", idSolicitud);
-            operation.AddIntParam("IdUsuario", idIngeniero);
-            operation.AddVarcharParam("UrlArchivo", url);
-            operation.AddVarcharParam("NombreArchivo", nombreArchivo);
-            operation.AddVarcharParam("TipoArchivo", tipoArchivo);
-
-            var sqlDao = SqlDao.GetInstance();
-            sqlDao.ExecuteProcedure(operation);
         }
     }
 }

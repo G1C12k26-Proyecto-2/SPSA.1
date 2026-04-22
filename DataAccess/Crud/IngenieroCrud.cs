@@ -366,6 +366,21 @@ namespace DataAccess.Crud
             _sqlDao.ExecuteProcedure(operation);
             return true;
         }
-       
+        public bool GuardarFotoSolicitud(int idSolicitud, int idUsuario, string urlArchivo, string nombreArchivo, string tipoArchivo)
+        {
+            var operation = new SqlOperation
+            {
+                ProcedureName = "SP_GUARDAR_FOTO_SOLICITUD"
+            };
+            operation.AddIntParam("IdSolicitud", idSolicitud);
+            operation.AddIntParam("IdUsuario", idUsuario);
+            operation.AddVarcharParam("UrlArchivo", urlArchivo);
+            operation.AddVarcharParam("NombreArchivo", nombreArchivo);
+            operation.AddVarcharParam("TipoArchivo", tipoArchivo);
+
+            _sqlDao.ExecuteProcedure(operation);
+            return true;
+        }
+
     }
 }
