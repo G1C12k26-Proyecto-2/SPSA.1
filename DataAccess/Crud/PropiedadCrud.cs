@@ -72,5 +72,13 @@ namespace DataAccess.Crud
 
             return lstResults;
         }
+
+        public int CreateAndReturnId(Propiedad propiedad)
+        {
+            var operation = _mapper.GetCreateStatementWithReturnId(propiedad);
+            var result = _sqlDao.ExecuteProcedureScalar(operation);
+
+            return Convert.ToInt32(result);
+        }
     }
 }
