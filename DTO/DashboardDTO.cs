@@ -2,11 +2,12 @@
 {
     public class DashboardDTO : BaseClass
     {
-        public int TotalUsuarios { get; set; }
-        public int UsuariosActivos { get; set; }
-        public int TotalFincas { get; set; }
-        public int SolicitudesPendientes { get; set; }
-        public int PagosDelMes { get; set; }
-        public decimal MontoPagosDelMes { get; set; }
+        public int TotalPendientes { get; set; }
+        public int TotalEnProceso { get; set; }
+        public int TotalAprobadas { get; set; }
+        public int TotalRechazadas { get; set; }
+        public int TotalSolicitudes { get; set; }
+        public decimal TotalPagosMenuales { get; set; }
+        public decimal PromedioPagoAprobado { get; set; }
     }
 }

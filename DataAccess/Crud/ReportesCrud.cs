@@ -39,23 +39,6 @@ namespace DataAccess.Crud
             throw new NotImplementedException();
         }
 
-        public List<ReportesPagosDTO> GetReportesPagos()
-        {
-            var operation = _mapper.GetReportesPagosStatement();
-            var results = _sqlDao.ExecuteProcedureWithQuery(operation);
-
-            var resultList = new List<ReportesPagosDTO>();
-            if (results.Count > 0)
-            {
-                var dtoList = _mapper.BuildPagoObjects(results);
-                foreach (var item in dtoList)
-                {
-                    resultList.Add((ReportesPagosDTO)item);
-                }
-            }
-            return resultList;
-        }
-
         public List<ReportesSolicitudesDTO> GetReportesSolicitudes()
         {
             var operation = _mapper.GetReportesSolicitudesStatement();

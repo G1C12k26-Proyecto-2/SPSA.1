@@ -8,19 +8,20 @@ namespace DataAccess.Mappers
         public BaseClass BuildObject(Dictionary<string, object> row)
         {
             var dashboard = new DashboardDTO();
-            dashboard.TotalUsuarios = Convert.ToInt32(row["TotalUsuarios"]);
-            dashboard.UsuariosActivos = Convert.ToInt32(row["UsuariosActivos"]);
-            dashboard.TotalFincas = Convert.ToInt32(row["TotalFincas"]);
-            dashboard.SolicitudesPendientes = Convert.ToInt32(row["SolicitudesPendientes"]);
-            dashboard.PagosDelMes = Convert.ToInt32(row["PagosDelMes"]);
-            dashboard.MontoPagosDelMes = Convert.ToDecimal(row["MontoPagosDelMes"]);
+            dashboard.TotalPendientes = Convert.ToInt32(row["TotalPendientes"]);
+            dashboard.TotalEnProceso = Convert.ToInt32(row["TotalEnProceso"]);
+            dashboard.TotalAprobadas = Convert.ToInt32(row["TotalAprobadas"]);
+            dashboard.TotalRechazadas = Convert.ToInt32(row["TotalRechazadas"]);
+            dashboard.TotalSolicitudes = Convert.ToInt32(row["TotalSolicitudes"]);
+            dashboard.TotalPagosMenuales = Convert.ToDecimal(row["TotalPagosMensuales"]);
+            dashboard.PromedioPagoAprobado = Convert.ToDecimal(row["PromedioPagoAprobado"]);
             return dashboard;
         }
 
         public SqlOperation GetRetrieveAllStatement()
         {
             var operation = new SqlOperation();
-            operation.ProcedureName = "SP_Dashboard_Get";
+            operation.ProcedureName = "SP_GET_DASHBOARD_ADMIN";
             return operation;
         }
     }
