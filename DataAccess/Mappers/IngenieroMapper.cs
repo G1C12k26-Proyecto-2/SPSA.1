@@ -1,4 +1,5 @@
 ﻿using DTO.Ingeniero;
+using DTO.Ingeniero.RealizarVisita;
 using System;
 using System.Collections.Generic;
 
@@ -411,6 +412,114 @@ namespace DataAccess.Mappers
                 TotalPendientes = totalPendientes,
                 TotalEnProceso = totalEnProceso
             };
+        }
+        public List<SolicitudPendienteDTO> MapToSolicitudesPendientes(List<Dictionary<string, object>> result)
+        {
+            var solicitudes = new List<SolicitudPendienteDTO>();
+
+            if (result == null) return solicitudes;
+
+            foreach (var row in result)
+            {
+                string provincia = row["Provincia"]?.ToString() ?? "";
+                string canton = row["Canton"]?.ToString() ?? "";
+                string distrito = row["Distrito"]?.ToString() ?? "";
+                string ubicacion = $"{provincia}, {canton}, {distrito}".TrimStart(',', ' ').TrimEnd(',', ' ');
+
+                var solicitud = new SolicitudPendienteDTO
+                {
+                    IdSolicitud = Convert.ToInt32(row["IdSolicitud"]),
+                    NombreFinca = row["NombreFinca"]?.ToString() ?? "",
+                    Propietario = row["Propietario"]?.ToString() ?? "",
+                    Ubicacion = ubicacion,
+                    Hectareas = Convert.ToDecimal(row["HectareasOriginal"]),
+                    TipoVegetacion = row["TipoVegetacionOriginal"]?.ToString() ?? "",
+                    Estado = row["Estado"]?.ToString() ?? "",
+                    FechaSolicitud = Convert.ToDateTime(row["FechaSolicitud"])
+                };
+                solicitudes.Add(solicitud);
+            }
+
+            return solicitudes;
+        }
+
+        public DatosSolicitudVisitaDTO MapToDatosSolicitudVisita(List<Dictionary<string, object>> result)
+        {
+            var solicitud = new DatosSolicitudVisitaDTO();
+
+            if (result == null || result.Count == 0) return solicitud;
+
+            var row = result[0];
+
+            solicitud.IdSolicitud = Convert.ToInt32(row["IdSolicitud"]);
+            solicitud.NombreFinca = row["NombreFinca"]?.ToString() ?? "";
+            solicitud.Estado = row["Estado"]?.ToString() ?? "";
+            solicitud.Propietario = row["Propietario"]?.ToString() ?? "";
+            solicitud.Provincia = row["Provincia"]?.ToString() ?? "";
+            solicitud.Canton = row["Canton"]?.ToString() ?? "";
+            solicitud.Distrito = row["Distrito"]?.ToString() ?? "";
+
+            // Datos originales
+            solicitud.HectareasOriginal = row["HectareasOriginal"] != DBNull.Value ? Convert.ToDecimal(row["HectareasOriginal"]) : (decimal?)null;
+            solicitud.TipoVegetacionOriginal = row["TipoVegetacionOriginal"]?.ToString() ?? "";
+            solicitud.PendienteOriginal = row["PendienteOriginal"]?.ToString() ?? "";
+            solicitud.TieneRiosQuebradasOriginal = row["TieneRiosQuebradasOriginal"] != DBNull.Value ? Convert.ToBoolean(row["TieneRiosQuebradasOriginal"]) : (bool?)null;
+            solicitud.CantidadNacientesOriginal = row["CantidadNacientesOriginal"] != DBNull.Value ? Convert.ToInt32(row["CantidadNacientesOriginal"]) : (int?)null;
+            solicitud.UsoSueloOriginal = row["UsoSueloOriginal"]?.ToString() ?? "";
+
+            // Datos de visita programada
+            solicitud.FechaVisitaProgramada = row["FechaVisitaProgramada"] != DBNull.Value ? Convert.ToDateTime(row["FechaVisitaProgramada"]) : (DateTime?)null;
+            solicitud.HoraInicioVisita = row["HoraInicioVisita"] != DBNull.Value ? TimeSpan.Parse(row["HoraInicioVisita"].ToString()) : (TimeSpan?)null;
+            solicitud.MedioTransporte = row["MedioTransporte"]?.ToString() ?? "";
+            solicitud.ObjetivoVisita = row["ObjetivoVisita"]?.ToString() ?? "";
+            solicitud.EquipoMateriales = row["EquipoMateriales"]?.ToString() ?? "";
+            solicitud.ObservacionesCoordinacion = row["ObservacionesCoordinacion"]?.ToString() ?? "";
+
+            // Ingeniero asignado
+            solicitud.IdIngeniero = row["IdIngeniero"] != DBNull.Value ? Convert.ToInt32(row["IdIngeniero"]) : (int?)null;
+            solicitud.IngenieroNombre = row["IngenieroNombre"]?.ToString() ?? "";
+
+            return solicitud;
+        }
+
+        public ParametrosConfiguracionDTO MapToParametrosConfiguracion(List<Dictionary<string, object>> result)
+        {
+            var parametros = new ParametrosConfiguracionDTO
+            {
+                AjustesVegetacion = new Dictionary<string, int>(),
+                AjustesPendiente = new Dictionary<string, int>()
+            };
+
+            if (result == null) return parametros;
+
+            foreach (var row in result)
+            {
+                string clave = row["Clave"]?.ToString() ?? "";
+                string categoria = row["Categoria"]?.ToString() ?? "";
+
+                // Intentar convertir Valor a número, si falla omitir
+                int valor = 0;
+                if (row["Valor"] != DBNull.Value)
+                {
+                    bool esNumero = int.TryParse(row["Valor"].ToString(), out valor);
+                    if (!esNumero) continue; // Saltar valores no numéricos
+                }
+
+                if (categoria == "VEGETACION")
+                    parametros.AjustesVegetacion[clave] = valor;
+                else if (categoria == "PENDIENTE")
+                    parametros.AjustesPendiente[clave] = valor;
+                else if (clave == "PRECIO_BASE_HECTAREA")
+                    parametros.PrecioBaseHectarea = valor;
+                else if (clave == "TOPE_MAXIMO_AJUSTE")
+                    parametros.TopeMaximoAjuste = valor;
+                else if (clave == "RIOS_QUEBRADAS")
+                    parametros.AjusteRiosQuebradas = valor;
+                else if (clave == "NACIENTES")
+                    parametros.AjustePorNaciente = valor;
+            }
+
+            return parametros;
         }
     }
 }

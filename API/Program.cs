@@ -1,6 +1,8 @@
+using API.Interfaces;
 using API.Services;
 using AppLogic;
 using AppLogic.Interfaces;
+using DTO;
 using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.Configure<CloudinarySettings>(
+    builder.Configuration.GetSection("CloudinarySettings")
+);
+
+
 builder.Services.AddEndpointsApiExplorer();
 
 // Configurar Swagger
@@ -26,6 +33,9 @@ builder.Services.AddSingleton<IUserManager, UserManager>();
 builder.Services.AddSingleton<IAuthManager, AuthManager>();
 builder.Services.AddSingleton<IEmailService, EmailService>();
 builder.Services.AddSingleton<IIngenieroManager, IngenieroManager>();
+builder.Services.AddSingleton<ICloudinaryService, CloudinaryService>();
+
+
 
 // Configurar CORS
 builder.Services.AddCors(options =>

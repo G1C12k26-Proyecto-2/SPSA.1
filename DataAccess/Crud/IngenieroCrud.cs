@@ -1,6 +1,7 @@
 ﻿using DataAccess.Dao;
 using DataAccess.Mappers;
 using DTO.Ingeniero;
+using DTO.Ingeniero.RealizarVisita;
 using System;
 using System.Collections.Generic;
 
@@ -208,5 +209,163 @@ namespace DataAccess.Crud
 
             return _mapper.MapToAgendaCompleta(eventosMes, visitasHoy, mes, anio);
         }
+        public List<SolicitudPendienteDTO> GetSolicitudesPendientes(int ingenieroId)
+        {
+            var operation = new SqlOperation
+            {
+                ProcedureName = "SP_GET_SOLICITUDES_PENDIENTES"
+            };
+            operation.AddIntParam("IdIngeniero", ingenieroId);
+
+            var result = _sqlDao.ExecuteProcedureWithQuery(operation);
+            return _mapper.MapToSolicitudesPendientes(result);
+        }
+
+        public ProgramarVisitaResponseDTO ProgramarVisita(int ingenieroId, ProgramarVisitaRequestDTO request)
+        {
+            var operation = new SqlOperation
+            {
+                ProcedureName = "SP_PROGRAMAR_VISITA"
+            };
+            operation.AddIntParam("IdSolicitud", request.IdSolicitud);
+            operation.AddIntParam("IdIngeniero", ingenieroId);
+            operation.AddDateTimeParam("FechaVisita", request.FechaVisita);
+            operation.AddTimeParam("HoraInicio", request.HoraInicio);
+            operation.AddIntParam("DuracionEstimada", request.DuracionEstimada);
+            operation.AddVarcharParam("MedioTransporte", request.MedioTransporte);
+            operation.AddVarcharParam("ObjetivoVisita", request.ObjetivoVisita);
+            operation.AddVarcharParam("EquipoMateriales", request.EquipoMateriales ?? "");
+            operation.AddVarcharParam("ObservacionesCoordinacion", request.ObservacionesCoordinacion ?? "");
+
+            var result = _sqlDao.ExecuteProcedureWithQuery(operation);
+
+            int idEvento = 0;
+            if (result != null && result.Count > 0)
+            {
+                idEvento = Convert.ToInt32(result[0]["IdEvento"]);
+            }
+
+            return new ProgramarVisitaResponseDTO
+            {
+                Exito = true,
+                Mensaje = "Visita programada exitosamente",
+                IdEvento = idEvento,
+                IdSolicitud = request.IdSolicitud,
+                NuevoEstado = "En Proceso"
+            };
+        }
+        // ========== MÉTODOS PARA EVALUACIÓN TÉCNICA ==========
+
+        public DatosSolicitudVisitaDTO GetSolicitudParaRealizarVisita(int idSolicitud)
+        {
+            var operation = new SqlOperation
+            {
+                ProcedureName = "SP_GET_SOLICITUD_BY_ID"
+            };
+            operation.AddIntParam("IdSolicitud", idSolicitud);
+
+            var result = _sqlDao.ExecuteProcedureWithQuery(operation);
+            return _mapper.MapToDatosSolicitudVisita(result);
+        }
+
+        public ParametrosConfiguracionDTO GetParametrosConfiguracion()
+        {
+            var operation = new SqlOperation
+            {
+                ProcedureName = "SP_GET_PARAMETROS_CONFIGURACION"
+            };
+
+            var result = _sqlDao.ExecuteProcedureWithQuery(operation);
+            return _mapper.MapToParametrosConfiguracion(result);
+        }
+
+        public bool GuardarRealizarVisita(int ingenieroId, RealizarVisitaRequestDTO request)
+        {
+            var operation = new SqlOperation
+            {
+                ProcedureName = "SP_UPSERT_DETALLE_SOLICITUD"
+            };
+
+            operation.AddIntParam("IdSolicitud", request.IdSolicitud);
+            operation.AddIntParam("IdIngeniero", ingenieroId);
+
+            // Datos verificados
+            if (request.HectareasVerificadas.HasValue)
+                operation.AddDecimalParam("HectareasVerificadas", request.HectareasVerificadas.Value);
+
+            if (!string.IsNullOrEmpty(request.TipoVegetacionVerificado))
+                operation.AddVarcharParam("TipoVegetacionVerificado", request.TipoVegetacionVerificado);
+
+            if (!string.IsNullOrEmpty(request.PendienteVerificada))
+                operation.AddVarcharParam("PendienteVerificada", request.PendienteVerificada);
+
+            // Recurso hídrico - Convertir a los parámetros que espera el SP
+            // El SP espera: @TieneRiosQuebradasVerificado (BIT) y @CantidadNacientesVerificado (INT)
+            if (!string.IsNullOrEmpty(request.RecursoHidricoVerificado))
+            {
+                // Convertir el string a BIT para @TieneRiosQuebradasVerificado
+                bool tieneRiosQuebradas = request.RecursoHidricoVerificado == "RIOS_QUEBRADAS";
+                operation.AddBitParam("TieneRiosQuebradasVerificado", tieneRiosQuebradas);
+
+                // Si es NACIENTES, enviar la cantidad (o 1 por defecto)
+                if (request.RecursoHidricoVerificado == "NACIENTES")
+                {
+                    int cantidad = request.CantidadNacientesVerificado ?? 1;
+                    operation.AddIntParam("CantidadNacientesVerificado", cantidad);
+                }
+                else
+                {
+                    // Si no es NACIENTES, enviar 0 o null
+                    operation.AddIntParam("CantidadNacientesVerificado", 0);
+                }
+            }
+            else
+            {
+                // Si no viene recurso hídrico, enviar valores por defecto
+                operation.AddBitParam("TieneRiosQuebradasVerificado", false);
+                operation.AddIntParam("CantidadNacientesVerificado", 0);
+            }
+
+            if (!string.IsNullOrEmpty(request.UsoSueloVerificado))
+                operation.AddVarcharParam("UsoSueloVerificado", request.UsoSueloVerificado);
+
+            if (request.FechaVisitaReal.HasValue)
+                operation.AddDateTimeParam("FechaVisitaReal", request.FechaVisitaReal.Value);
+
+            if (!string.IsNullOrEmpty(request.HoraInicioReal))
+            {
+                TimeSpan hora = TimeSpan.Parse(request.HoraInicioReal);
+                operation.AddTimeParam("HoraInicioReal", hora);
+            }
+
+            if (!string.IsNullOrEmpty(request.ObservacionesTecnicas))
+                operation.AddVarcharParam("ObservacionesTecnicas", request.ObservacionesTecnicas);
+
+            // CalificaParaPago - Enviar como VARCHAR
+            if (!string.IsNullOrEmpty(request.CalificaParaPago))
+                operation.AddVarcharParam("CalificaParaPago", request.CalificaParaPago);
+
+            if (!string.IsNullOrEmpty(request.RazonRechazo))
+                operation.AddVarcharParam("RazonRechazo", request.RazonRechazo);
+
+            _sqlDao.ExecuteProcedure(operation);
+            return true;
+        }
+
+        public bool ActualizarEstadoSolicitud(int idSolicitud, string nuevoEstado, string razon = null)
+        {
+            var operation = new SqlOperation
+            {
+                ProcedureName = "SP_UPDATE_STATUS_SOLICITUD"
+            };
+            operation.AddIntParam("IdSolicitud", idSolicitud);
+            operation.AddVarcharParam("NuevoEstado", nuevoEstado);
+            if (!string.IsNullOrEmpty(razon))
+                operation.AddVarcharParam("RazonRechazo", razon);
+
+            _sqlDao.ExecuteProcedure(operation);
+            return true;
+        }
+       
     }
 }

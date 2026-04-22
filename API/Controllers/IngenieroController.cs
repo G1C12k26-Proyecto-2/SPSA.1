@@ -1,6 +1,8 @@
 ﻿using AppLogic;
 using AppLogic.Interfaces;
 using DTO;
+using DTO.Ingeniero;
+using DTO.Ingeniero.RealizarVisita;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -12,10 +14,13 @@ namespace API.Controllers
     public class IngenieroController : ControllerBase
     {
         private readonly IIngenieroManager _ingenieroManager;
+        private readonly ICloudinaryService _cloudinaryService;  // ← Agregar
 
-        public IngenieroController()
+        // Modificar constructor
+        public IngenieroController(ICloudinaryService cloudinaryService)  
         {
-            _ingenieroManager = new IngenieroManager();
+            _ingenieroManager = new IngenieroManager(cloudinaryService);  
+            _cloudinaryService = cloudinaryService;
         }
 
         [HttpGet("Ingeniero/{ingenieroId}")]
@@ -133,6 +138,144 @@ namespace API.Controllers
                 {
                     Result = "ERROR",
                     Message = $"Error al cargar las visitas: {ex.Message}"
+                });
+            }
+        }
+        // GET: api/Ingeniero/solicitudes/pendientes/{ingenieroId}
+        [HttpGet("solicitudes/pendientes/{ingenieroId}")]
+        public async Task<IActionResult> GetSolicitudesPendientes(int ingenieroId)
+        {
+            try
+            {
+                //SE DEBE BORRAR ESTA LINEA
+                ingenieroId = 57;//SE DEBE BORRAR ESTA LINEA
+
+                var solicitudes = await _ingenieroManager.GetSolicitudesPendientesAsync(ingenieroId);
+
+                return Ok(new ApiResponse
+                {
+                    Result = "SUCCESS",
+                    Data = solicitudes,
+                    Message = "Solicitudes pendientes cargadas exitosamente"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse
+                {
+                    Result = "ERROR",
+                    Message = $"Error al cargar solicitudes pendientes: {ex.Message}"
+                });
+            }
+        }
+
+        // POST: api/Ingeniero/visita/programar
+        [HttpPost("visita/programar")]
+        public async Task<IActionResult> ProgramarVisita([FromBody] ProgramarVisitaRequestDTO request)
+        {
+            try
+            {
+                //SE DEBE BORRAR ESTA LINEA
+                int ingenieroId = 57;//SE DEBE BORRAR ESTA LINEA
+                //SE DEBE BORRAR ESTA LINEA
+
+                var resultado = await _ingenieroManager.ProgramarVisitaAsync(ingenieroId, request);
+
+                return Ok(new ApiResponse
+                {
+                    Result = "SUCCESS",
+                    Data = resultado,
+                    Message = resultado.Mensaje
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse
+                {
+                    Result = "ERROR",
+                    Message = $"Error al programar visita: {ex.Message}"
+                });
+            }
+        }
+        [HttpGet("realizar-visita/{idSolicitud}")]
+        public async Task<IActionResult> GetSolicitudParaRealizarVisita(int idSolicitud)
+        {
+            try
+            {
+                var solicitud = await _ingenieroManager.GetSolicitudParaRealizarVisitaAsync(idSolicitud);
+
+                if (solicitud?.IdSolicitud == 0)
+                {
+                    return NotFound(new ApiResponse
+                    {
+                        Result = "ERROR",
+                        Message = $"No se encontró la solicitud con ID {idSolicitud}"
+                    });
+                }
+
+                return Ok(new ApiResponse
+                {
+                    Result = "SUCCESS",
+                    Data = solicitud,
+                    Message = "Datos cargados exitosamente"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse
+                {
+                    Result = "ERROR",
+                    Message = $"Error al cargar los datos: {ex.Message}"
+                });
+            }
+        }
+
+        [HttpGet("realizar-visita/parametros")]
+        public async Task<IActionResult> GetParametrosConfiguracion()
+        {
+            try
+            {
+                var parametros = await _ingenieroManager.GetParametrosConfiguracionAsync();
+
+                return Ok(new ApiResponse
+                {
+                    Result = "SUCCESS",
+                    Data = parametros,
+                    Message = "Parámetros cargados exitosamente"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse
+                {
+                    Result = "ERROR",
+                    Message = $"Error al cargar parámetros: {ex.Message}"
+                });
+            }
+        }
+
+        [HttpPost("realizar-visita/guardar")]
+        public async Task<IActionResult> GuardarRealizarVisita([FromBody] RealizarVisitaRequestDTO request)
+        {
+            try
+            {
+                int ingenieroId = 57; // SE DEBE BORRAR - Obtener del token
+
+                var resultado = await _ingenieroManager.GuardarRealizarVisitaAsync(ingenieroId, request);
+
+                return Ok(new ApiResponse
+                {
+                    Result = "SUCCESS",
+                    Data = resultado,
+                    Message = resultado.Mensaje
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse
+                {
+                    Result = "ERROR",
+                    Message = $"Error al guardar: {ex.Message}"
                 });
             }
         }
