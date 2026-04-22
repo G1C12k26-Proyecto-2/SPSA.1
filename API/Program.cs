@@ -16,6 +16,8 @@ builder.Services.AddSingleton<IDashboardManager, DashboardManager>();
 builder.Services.AddSingleton<IEmailService, EmailService>();
 builder.Services.AddSingleton<IAuditoriaManager, AuditoriaManager>();
 builder.Services.AddSingleton<IReportesManager, ReportesManager>();
+builder.Services.AddSingleton<IPagoManager, PagoManager>();
+
 
 builder.Services.AddCors(options =>
 {
