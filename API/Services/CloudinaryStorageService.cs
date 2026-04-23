@@ -1,4 +1,4 @@
-﻿using API.DTO.CloudinaryDTOs;
+﻿using DTO.CloudinaryDTO;
 using API.Interfaces;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;

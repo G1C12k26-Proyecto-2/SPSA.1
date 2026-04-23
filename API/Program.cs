@@ -12,7 +12,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<IUserManager, UserManager>();
 builder.Services.AddSingleton<IAuthManager, AuthManager>();
-builder.Services.AddSingleton<AppLogic.Interfaces.IEmailService, EmailService>(); // 👈 namespace explícito
+builder.Services.AddSingleton<IIngenieroManager, IngenieroManager>();
+builder.Services.AddSingleton<AppLogic.Interfaces.IEmailService, EmailService>(); 
 
 // ========== CLOUDINARY ==========
 var cloudinaryAccount = new Account(
@@ -22,7 +23,7 @@ var cloudinaryAccount = new Account(
 );
 var cloudinary = new Cloudinary(cloudinaryAccount);
 builder.Services.AddSingleton(cloudinary);
-builder.Services.AddSingleton<ICloudinaryStorageService, CloudinaryStorageService>(); // 👈 fix principal
+builder.Services.AddSingleton<ICloudinaryStorageService, CloudinaryStorageService>();
 // =================================
 
 builder.Services.AddCors(options =>
