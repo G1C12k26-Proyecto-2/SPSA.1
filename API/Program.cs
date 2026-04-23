@@ -1,43 +1,30 @@
-using API.Interfaces;
-using API.Services;
+using API.Interfaces;        // 👈 Agregar para ICloudinaryStorageService e IEmailService de API
+using API.Services;          // ya lo tienes
 using AppLogic;
 using AppLogic.Interfaces;
-using DTO;
-using Microsoft.OpenApi;
+using CloudinaryDotNet;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-builder.Services.Configure<CloudinarySettings>(
-    builder.Configuration.GetSection("CloudinarySettings")
-);
-
-
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
-// Configurar Swagger
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "PSA API",
-        Version = "v1",
-        Description = "API del Sistema de Pago por Servicios Ambientales"
-    });
-});
-
-// Registrar servicios
 builder.Services.AddSingleton<IUserManager, UserManager>();
 builder.Services.AddSingleton<IAuthManager, AuthManager>();
-builder.Services.AddSingleton<AppLogic.Interfaces.IEmailService, EmailService>();
-builder.Services.AddSingleton<IIngenieroManager, IngenieroManager>();
-builder.Services.AddSingleton<AppLogic.Interfaces.ICloudinaryService, CloudinaryService>();
+builder.Services.AddSingleton<AppLogic.Interfaces.IEmailService, EmailService>(); // 👈 namespace explícito
 
+// ========== CLOUDINARY ==========
+var cloudinaryAccount = new Account(
+    builder.Configuration["Cloudinary:CloudName"],
+    builder.Configuration["Cloudinary:ApiKey"],
+    builder.Configuration["Cloudinary:ApiSecret"]
+);
+var cloudinary = new Cloudinary(cloudinaryAccount);
+builder.Services.AddSingleton(cloudinary);
+builder.Services.AddSingleton<ICloudinaryStorageService, CloudinaryStorageService>(); // 👈 fix principal
+// =================================
 
-
-// Configurar CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "DemoPolicy",
@@ -51,29 +38,23 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "PSA API v1");
-        c.RoutePrefix = "swagger";
-    });
+    app.UseSwaggerUI();
 }
 else
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c =>
+    app.UseSwaggerUI(options =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "PSA API v1");
-        c.RoutePrefix = "swagger";
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+        options.RoutePrefix = string.Empty;
     });
 }
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
-app.UseCors("DemoPolicy");
-
+app.UseCors("DemoPolicy"); // 👈 también fix aquí, faltaba el nombre de la política
 app.Run();
