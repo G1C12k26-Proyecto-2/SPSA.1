@@ -1,4 +1,5 @@
-﻿using AppLogic.Interfaces;
+﻿using API.Interfaces;
+using AppLogic.Interfaces;
 using DataAccess.Crud;
 using DataAccess.Dao;
 using DTO.Ingeniero;
@@ -11,9 +12,9 @@ namespace AppLogic
     public class IngenieroManager : IIngenieroManager
     {
         private readonly IngenieroCrud _ingenieroCrud;
-        private readonly ICloudinaryService _cloudinaryService;
+        private readonly ICloudinaryStorageService _cloudinaryService;
 
-        public IngenieroManager(ICloudinaryService cloudinaryService)
+        public IngenieroManager(ICloudinaryStorageService cloudinaryService)
         {
             _ingenieroCrud = new IngenieroCrud();
             _cloudinaryService = cloudinaryService;
@@ -129,20 +130,23 @@ namespace AppLogic
                         if (!string.IsNullOrEmpty(foto.Base64Content))
                         {
                             // Subir a Cloudinary
-                            var imageUrl = await _cloudinaryService.UploadImageFromBase64Async(
+                            var uploadResult = await _cloudinaryService.UploadImageFromBase64Async(
                                 foto.Base64Content,
                                 foto.NombreArchivo,
                                 $"solicitudes/{request.IdSolicitud}"
                             );
 
                             // Guardar en BD usando el CRUD
-                            _ingenieroCrud.GuardarFotoSolicitud(
-                                request.IdSolicitud,
-                                ingenieroId,
-                                imageUrl,
-                                foto.NombreArchivo,
-                                foto.TipoArchivo
-                            );
+                            if (uploadResult.Success)
+                            {
+                                _ingenieroCrud.GuardarFotoSolicitud(
+                                    request.IdSolicitud,
+                                    ingenieroId,
+                                    uploadResult.Url,  // 👈 extraer la URL del DTO
+                                    foto.NombreArchivo,
+                                    foto.TipoArchivo
+                                );
+                            }
                         }
                     }
                 }

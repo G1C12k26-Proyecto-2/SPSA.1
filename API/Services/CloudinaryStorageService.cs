@@ -1,4 +1,4 @@
-﻿using DTO.CloudinaryDTO;
+﻿using API.DTO.CloudinaryDTOs;
 using API.Interfaces;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
@@ -22,6 +22,24 @@ namespace API.Services
         public async Task<FileResponseDTO> UploadFileAsync(Stream fileStream, string fileName, string? folder = null)
         {
             return await UploadToCloudinary(fileStream, fileName, folder, false);
+        }
+
+        // 👈 Método nuevo requerido por IIngenieroManager
+        public async Task<FileResponseDTO> UploadImageFromBase64Async(string base64String, string fileName, string? folder = null)
+        {
+            var response = new FileResponseDTO();
+            try
+            {
+                var bytes = Convert.FromBase64String(base64String);
+                using var stream = new MemoryStream(bytes);
+                return await UploadToCloudinary(stream, fileName, folder, true);
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = $"Error uploading base64 image: {ex.Message}";
+                return response;
+            }
         }
 
         private async Task<FileResponseDTO> UploadToCloudinary(Stream fileStream, string fileName, string? folder, bool isImage)
@@ -61,12 +79,6 @@ namespace API.Services
 
                     response.PublicId = uploadResult.PublicId;
                     response.Url = uploadResult.Url?.ToString() ?? string.Empty;
-//                    response.SecureUrl = uploadResult.SecureUrl?.ToString() ?? string.Empty;
-//                    response.Format = uploadResult.Format ?? string.Empty;
-//                    response.Size = uploadResult.Bytes.GetValueOrDefault(0); // Fixed
-//                    response.Width = uploadResult.Width.GetValueOrDefault(0); // Fixed
-//                    response.Height = uploadResult.Height.GetValueOrDefault(0); // Fixed
-//                    response.CreatedAt = DateTime.UtcNow;
                     response.Success = true;
                 }
                 else
@@ -91,10 +103,6 @@ namespace API.Services
 
                     response.PublicId = uploadResult.PublicId;
                     response.Url = uploadResult.Url?.ToString() ?? string.Empty;
-//                    response.SecureUrl = uploadResult.SecureUrl?.ToString() ?? string.Empty;
-//                    response.Format = Path.GetExtension(fileName).TrimStart('.');
-//                    response.Size = uploadResult.Bytes.GetValueOrDefault(0); // Fixed
-//                    response.CreatedAt = DateTime.UtcNow;
                     response.Success = true;
                 }
 
