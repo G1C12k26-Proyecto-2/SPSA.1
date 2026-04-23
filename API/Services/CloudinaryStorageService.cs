@@ -1,4 +1,4 @@
-﻿using API.DTO.CloudinaryDTOs;
+﻿using DTO;
 using API.Interfaces;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
@@ -15,16 +15,11 @@ namespace API.Services
         }
 
         public async Task<FileResponseDTO> UploadImageAsync(Stream fileStream, string fileName, string? folder = null)
-        {
-            return await UploadToCloudinary(fileStream, fileName, folder, true);
-        }
+            => await UploadToCloudinary(fileStream, fileName, folder, true);
 
         public async Task<FileResponseDTO> UploadFileAsync(Stream fileStream, string fileName, string? folder = null)
-        {
-            return await UploadToCloudinary(fileStream, fileName, folder, false);
-        }
+            => await UploadToCloudinary(fileStream, fileName, folder, false);
 
-        // 👈 Método nuevo requerido por IIngenieroManager
         public async Task<FileResponseDTO> UploadImageFromBase64Async(string base64String, string fileName, string? folder = null)
         {
             var response = new FileResponseDTO();
@@ -133,14 +128,12 @@ namespace API.Services
         public async Task<List<FileResponseDTO>> UploadMultipleFilesAsync(List<(Stream Stream, string FileName)> files, string? folder = null)
         {
             var results = new List<FileResponseDTO>();
-
             foreach (var file in files)
             {
                 var isImage = Path.GetExtension(file.FileName).ToLower() is ".jpg" or ".jpeg" or ".png" or ".gif" or ".bmp" or ".webp";
                 var result = await UploadToCloudinary(file.Stream, file.FileName, folder, isImage);
                 results.Add(result);
             }
-
             return results;
         }
     }

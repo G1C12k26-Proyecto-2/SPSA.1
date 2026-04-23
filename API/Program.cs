@@ -1,8 +1,9 @@
-using API.Interfaces;        // 👈 Agregar para ICloudinaryStorageService e IEmailService de API
-using API.Services;          // ya lo tienes
+using API.Interfaces;       
+using API.Services;         
 using AppLogic;
 using AppLogic.Interfaces;
 using CloudinaryDotNet;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +14,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IUserManager, UserManager>();
 builder.Services.AddSingleton<IAuthManager, AuthManager>();
 builder.Services.AddSingleton<IIngenieroManager, IngenieroManager>();
-builder.Services.AddSingleton<AppLogic.Interfaces.IEmailService, EmailService>(); 
+builder.Services.AddSingleton<AppLogic.Interfaces.IEmailService, EmailService>();
 
 // ========== CLOUDINARY ==========
 var cloudinaryAccount = new Account(
@@ -23,7 +24,9 @@ var cloudinaryAccount = new Account(
 );
 var cloudinary = new Cloudinary(cloudinaryAccount);
 builder.Services.AddSingleton(cloudinary);
-builder.Services.AddSingleton<ICloudinaryStorageService, CloudinaryStorageService>();
+builder.Services.AddSingleton<CloudinaryStorageService>();
+builder.Services.AddSingleton<API.Interfaces.ICloudinaryStorageService>(p => p.GetRequiredService<CloudinaryStorageService>());
+builder.Services.AddSingleton<AppLogic.Interfaces.ICloudinaryStorageService>(p => p.GetRequiredService<CloudinaryStorageService>());
 // =================================
 
 builder.Services.AddCors(options =>

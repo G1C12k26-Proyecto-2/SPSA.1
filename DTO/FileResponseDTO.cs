@@ -1,4 +1,4 @@
-﻿namespace API.DTO.CloudinaryDTOs
+﻿namespace DTO
 {
     public class FileResponseDTO
     {

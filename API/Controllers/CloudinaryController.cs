@@ -1,4 +1,4 @@
-﻿using API.DTO.CloudinaryDTOs;
+﻿using DTO;
 using API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 

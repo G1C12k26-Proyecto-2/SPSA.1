@@ -1,5 +1,4 @@
-﻿using API.Interfaces;
-using AppLogic.Interfaces;
+﻿using AppLogic.Interfaces;
 using DataAccess.Crud;
 using DataAccess.Dao;
 using DTO.Ingeniero;
