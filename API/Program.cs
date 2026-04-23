@@ -1,10 +1,10 @@
+using API.Interfaces;        // 👈 Agregar para ICloudinaryStorageService e IEmailService de API
+using API.Services;          // ya lo tienes
 using AppLogic;
 using AppLogic.Interfaces;
-using API.Services;
+using CloudinaryDotNet;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -12,22 +12,32 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<IUserManager, UserManager>();
 builder.Services.AddSingleton<IAuthManager, AuthManager>();
-builder.Services.AddSingleton<IEmailService, EmailService>();
+builder.Services.AddSingleton<AppLogic.Interfaces.IEmailService, EmailService>(); // 👈 namespace explícito
+
+// ========== CLOUDINARY ==========
+var cloudinaryAccount = new Account(
+    builder.Configuration["Cloudinary:CloudName"],
+    builder.Configuration["Cloudinary:ApiKey"],
+    builder.Configuration["Cloudinary:ApiSecret"]
+);
+var cloudinary = new Cloudinary(cloudinaryAccount);
+builder.Services.AddSingleton(cloudinary);
+builder.Services.AddSingleton<ICloudinaryStorageService, CloudinaryStorageService>(); // 👈 fix principal
+// =================================
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "DemoPolicy",
         policy =>
         {
-            policy.AllowAnyOrigin(); //mypage.com, www.mypage.com, localhost:3000, etc
-            policy.AllowAnyMethod(); //post, get, put, delete, etc
-            policy.AllowAnyHeader(); //application/json, aplication/xml, etc
+            policy.AllowAnyOrigin();
+            policy.AllowAnyMethod();
+            policy.AllowAnyHeader();
         });
 });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -44,11 +54,7 @@ else
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
-app.UseCors();
-
+app.UseCors("DemoPolicy"); // 👈 también fix aquí, faltaba el nombre de la política
 app.Run();
