@@ -27,5 +27,17 @@ public class SqlOperation
     {
         Parameters.Add(new SqlParameter("@" + parameterName, parameterValue));
     }
+    public void AddDecimalParam(string parameterName, decimal parameterValue)
+    {
+        Parameters.Add(new SqlParameter("@" + parameterName, parameterValue));
+    }
+    public void AddTimeParam(string parameterName, TimeSpan parameterValue)
+    {
+        Parameters.Add(new SqlParameter("@" + parameterName, parameterValue));
+    }
+    public void AddBitParam(string parameterName, bool parameterValue)
+    {
+        Parameters.Add(new SqlParameter("@" + parameterName, parameterValue));
+    }
 }
 
