@@ -3,12 +3,14 @@ using AppLogic.Interfaces;
 using DTO;
 using DTO.Ingeniero;
 using DTO.Ingeniero.RealizarVisita;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 
 namespace API.Controllers
 {
+    [EnableCors("DemoPolicy")]
     [ApiController]
     [Route("api/[controller]")]
     public class IngenieroController : ControllerBase
@@ -25,10 +27,7 @@ namespace API.Controllers
         {
             try
             {
-                //SE DEBE BORRAR ESTA LINEA
-                ingenieroId = 57;//SE DEBE BORRAR ESTA LINEA
-                //SE DEBE BORRAR ESTA LINEA
-                var dashboard = await _ingenieroManager.GetDashboardAsync(ingenieroId);
+               var dashboard = await _ingenieroManager.GetDashboardAsync(ingenieroId);
 
                 return Ok(new ApiResponse
                 {
@@ -84,11 +83,6 @@ namespace API.Controllers
             try
             {
 
-                //SE DEBE BORRAR ESTA LINEA
-                ingenieroId = 57;//SE DEBE BORRAR ESTA LINEA
-                //SE DEBE BORRAR ESTA LINEA
-
-                // Si no se especifican año y mes, usar el actual
                 if (anio == 0) anio = DateTime.Now.Year;
                 if (mes == 0) mes = DateTime.Now.Month;
 
@@ -110,16 +104,11 @@ namespace API.Controllers
                 });
             }
         }
-        // GET: api/Ingeniero/agenda/{ingenieroId}/dia?fecha=2026-04-20
         [HttpGet("agenda/{ingenieroId}/dia")]
         public async Task<IActionResult> GetVisitasDia(int ingenieroId, [FromQuery] DateTime fecha)
         {
             try
             {
-                //SE DEBE BORRAR ESTA LINEA
-                ingenieroId = 57;//SE DEBE BORRAR ESTA LINEA
-                //SE DEBE BORRAR ESTA LINEA
-
                 var visitas = await _ingenieroManager.GetVisitasDiaAsync(ingenieroId, fecha);
 
                 return Ok(new ApiResponse
@@ -138,15 +127,11 @@ namespace API.Controllers
                 });
             }
         }
-        // GET: api/Ingeniero/solicitudes/pendientes/{ingenieroId}
         [HttpGet("solicitudes/pendientes/{ingenieroId}")]
         public async Task<IActionResult> GetSolicitudesPendientes(int ingenieroId)
         {
             try
             {
-                //SE DEBE BORRAR ESTA LINEA
-                ingenieroId = 57;//SE DEBE BORRAR ESTA LINEA
-
                 var solicitudes = await _ingenieroManager.GetSolicitudesPendientesAsync(ingenieroId);
 
                 return Ok(new ApiResponse
@@ -166,16 +151,11 @@ namespace API.Controllers
             }
         }
 
-        // POST: api/Ingeniero/visita/programar
         [HttpPost("visita/programar")]
         public async Task<IActionResult> ProgramarVisita([FromBody] ProgramarVisitaRequestDTO request)
         {
             try
             {
-                //SE DEBE BORRAR ESTA LINEA
-                int ingenieroId = 57;//SE DEBE BORRAR ESTA LINEA
-                //SE DEBE BORRAR ESTA LINEA
-
                 var resultado = await _ingenieroManager.ProgramarVisitaAsync(ingenieroId, request);
 
                 return Ok(new ApiResponse
@@ -256,7 +236,6 @@ namespace API.Controllers
         {
             try
             {
-                int ingenieroId = 57;
                 var resultado = await _ingenieroManager.GuardarRealizarVisitaAsync(ingenieroId, request);
 
                 return Ok(new ApiResponse
