@@ -31,5 +31,6 @@ namespace DTO
         public bool? CalificaParaPago { get; set; }
         public DateTime? FechaVisitaReal { get; set; }
         public string IngenieroNombre { get; set; }
+        public string DistritoTexto { get; set; } 
     }
 }

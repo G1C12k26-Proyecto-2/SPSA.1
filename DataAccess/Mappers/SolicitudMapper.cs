@@ -29,6 +29,7 @@ namespace DataAccess.Mappers
                 Canton = Safe<string>(row, "Canton"),
                 IdDistrito = row.ContainsKey("IdDistrito") && row["IdDistrito"] != DBNull.Value ? Safe<int>(row, "IdDistrito") : (int?)null,
                 Distrito = Safe<string>(row, "Distrito"),
+                DistritoTexto = Safe<string>(row, "DistritoTexto"),
                 Estado = Safe<string>(row, "Estado"),
                 FechaSolicitud = Safe<DateTime>(row, "FechaSolicitud"),
                 PagoMensual = row.ContainsKey("PagoMensual") && row["PagoMensual"] != DBNull.Value ? Safe<decimal>(row, "PagoMensual") : (decimal?)null,
@@ -68,6 +69,8 @@ namespace DataAccess.Mappers
             op.AddIntParam("TieneRiosQuebradasOriginal", s.TieneRiosQuebradasOriginal ? 1 : 0);
             op.AddIntParam("CantidadNacientesOriginal", s.CantidadNacientesOriginal);
             if (!string.IsNullOrEmpty(s.UsoSueloOriginal)) op.AddVarcharParam("UsoSueloOriginal", s.UsoSueloOriginal);
+            op.AddVarcharParam("Estado", string.IsNullOrEmpty(s.Estado) ? "Pendiente" : s.Estado);
+            if (!string.IsNullOrEmpty(s.DistritoTexto)) op.AddVarcharParam("DistritoTexto", s.DistritoTexto);
             return op;
         }
 

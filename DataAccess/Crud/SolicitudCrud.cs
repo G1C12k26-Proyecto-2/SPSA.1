@@ -66,5 +66,16 @@ namespace DataAccess.Crud
 
         public void UpsertDetalleUpdate(int idSolicitud, UpdateSolicitudDTO dto)
             => _sqlDao.ExecuteProcedure(_mapper.GetUpsertDetalleUpdateStatement(idSolicitud, dto));
+
+        public List<T> GetBorradores<T>(int usuarioId)
+        {
+            var op = new SqlOperation { ProcedureName = "SP_GET_BORRADORES_BY_USUARIO" };
+            op.AddIntParam("UsuarioId", usuarioId);
+            var results = new List<T>();
+            var rows = _sqlDao.ExecuteProcedureWithQuery(op);
+            foreach (var obj in _mapper.BuildObjects(rows))
+                results.Add((T)Convert.ChangeType(obj, typeof(T)));
+            return results;
+        }
     }
 }

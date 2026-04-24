@@ -32,5 +32,16 @@ namespace API.Controllers
         [HttpPut("Update")]
         public ApiResponse Update([FromBody] UpdateSolicitudDTO dto)
             => _solicitudManager.Update(dto);
+
+        [HttpGet("Borradores/{usuarioId}")]
+        public ApiResponse GetBorradores(int usuarioId)
+    => _solicitudManager.GetBorradores(usuarioId);
+        [HttpDelete("Delete/{id}")]
+        public ApiResponse Delete(int id)
+    => _solicitudManager.Delete(id);
+
+        [HttpPut("LoadBorrador/{id}")]
+        public ApiResponse LoadBorrador(int id)
+            => _solicitudManager.GetById(id);
     }
 }

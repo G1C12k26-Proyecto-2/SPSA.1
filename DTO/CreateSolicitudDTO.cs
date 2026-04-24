@@ -17,5 +17,7 @@ namespace DTO
         public bool TieneRiosQuebradasOriginal { get; set; }
         public int CantidadNacientesOriginal { get; set; }
         public string UsoSueloOriginal { get; set; }
+        public string Estado { get; set; } = "Pendiente";
+        public string DistritoTexto { get; set; }
     }
 }

@@ -118,5 +118,38 @@ namespace AppLogic
             }
             return response;
         }
+        public ApiResponse GetBorradores(int usuarioId)
+        {
+            var response = new ApiResponse();
+            try
+            {
+                var borradores = _crud.GetBorradores<SolicitudDTO>(usuarioId);
+                response.Result = "ok";
+                response.Data = borradores;
+            }
+            catch (Exception ex)
+            {
+                response.Result = "error";
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+        public ApiResponse Delete(int idSolicitud)
+        {
+            var response = new ApiResponse();
+            try
+            {
+                var dto = new SolicitudDTO { IdSolicitud = idSolicitud };
+                _crud.Delete(dto);
+                response.Result = "ok";
+                response.Message = "Solicitud eliminada correctamente.";
+            }
+            catch (Exception ex)
+            {
+                response.Result = "error";
+                response.Message = ex.Message;
+            }
+            return response;
+        }
     }
 }
