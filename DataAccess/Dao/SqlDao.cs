@@ -5,8 +5,6 @@ namespace DataAccess.Dao
     public class SqlDao
     {
         private string connectionString = "Server=tcp:spsadb.database.windows.net,1433;Initial Catalog=spsadb;Persist Security Info=False;User ID=spsadmin;Password=Password!123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-        // private string connectionString = "Server=.;Database=MedicalSolutionsDB;Trusted_Connection=True;TrustServerCertificate=True;";
-        //para conectar con el usuario y la contraseña de la base de datos
 
         private static SqlDao? instance;
 
@@ -19,14 +17,6 @@ namespace DataAccess.Dao
             return instance;
         }
 
-        /*
-                C  ->  void
-                R  ->  result
-                U  ->  void
-                D  ->  void
-         */
-
-        // este ejecuta  CREATE, UPDATE, DELETE
         public void ExecuteProcedure(SqlOperation pOperation)
         {
             try
@@ -46,6 +36,34 @@ namespace DataAccess.Dao
                 sqlConnection.Open();
                 cmd.ExecuteNonQuery();
                 sqlConnection.Close();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public object ExecuteProcedureScalar(SqlOperation pOperation)
+        {
+            try
+            {
+                SqlConnection sqlConnection = new SqlConnection(connectionString);
+
+                SqlCommand cmd = sqlConnection.CreateCommand();
+                cmd.Connection = sqlConnection;
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.CommandText = pOperation.ProcedureName;
+
+                foreach (var param in pOperation.Parameters)
+                {
+                    cmd.Parameters.Add(param);
+                }
+
+                sqlConnection.Open();
+                var result = cmd.ExecuteScalar();
+                sqlConnection.Close();
+
+                return result;
             }
             catch (Exception e)
             {
@@ -78,7 +96,6 @@ namespace DataAccess.Dao
                     while (reader.Read())
                     {
                         var row = new Dictionary<string, object>();
-                        //Recorre el reader en cada fila y obtiene los campos de forma que se almacenan ["nombre", valor]
                         for (int i = 0; i < reader.FieldCount; i++)
                         {
                             row.Add(reader.GetName(i), reader.GetValue(i));

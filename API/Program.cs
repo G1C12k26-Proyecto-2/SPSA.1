@@ -2,11 +2,16 @@ using API.Config;
 using API.Services;
 using AppLogic;
 using AppLogic.Interfaces;
+using API.Interfaces;       
+using API.Services;         
+using AppLogic;
+using AppLogic.Interfaces;
+using CloudinaryDotNet;
 
-var builder = WebApplication.CreateBuilder(args);
 
 
 // Add services to the container.
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<GoogleMapsOptions>(
     builder.Configuration.GetSection("GoogleMaps"));
@@ -22,22 +27,33 @@ builder.Services.AddSingleton<IAuthManager, AuthManager>();
 builder.Services.AddSingleton<IEmailService, EmailService>();
 builder.Services.AddSingleton<ISolicitudManager, SolicitudManager>();
 builder.Services.AddHttpClient<GoogleMapsService>();
-builder.Services.AddSingleton<IUbicacionesManager, UbicacionesManager>();
+
+// ========== CLOUDINARY ==========
+var cloudinaryAccount = new Account(
+    builder.Configuration["Cloudinary:CloudName"],
+    builder.Configuration["Cloudinary:ApiKey"],
+    builder.Configuration["Cloudinary:ApiSecret"]
+);
+var cloudinary = new Cloudinary(cloudinaryAccount);
+builder.Services.AddSingleton(cloudinary);
+builder.Services.AddSingleton<CloudinaryStorageService>();
+builder.Services.AddSingleton<API.Interfaces.ICloudinaryStorageService>(p => p.GetRequiredService<CloudinaryStorageService>());
+builder.Services.AddSingleton<AppLogic.Interfaces.ICloudinaryStorageService>(p => p.GetRequiredService<CloudinaryStorageService>());
+// =================================
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "DemoPolicy",
         policy =>
         {
-            policy.AllowAnyOrigin(); //mypage.com, www.mypage.com, localhost:3000, etc
-            policy.AllowAnyMethod(); //post, get, put, delete, etc
-            policy.AllowAnyHeader(); //application/json, aplication/xml, etc
+            policy.AllowAnyOrigin();
+            policy.AllowAnyMethod();
+            policy.AllowAnyHeader();
         });
 });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -54,11 +70,7 @@ else
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
-app.UseCors();
-
+app.UseCors("DemoPolicy"); // 👈 también fix aquí, faltaba el nombre de la política
 app.Run();

@@ -76,5 +76,18 @@ namespace API.Services
                 PlaceId = result.GetProperty("place_id").GetString() ?? ""
             };
         }
+
+        public async Task<string> GeocodeAddressRawAsync(string address)
+        {
+            var encodedAddress = Uri.EscapeDataString(address);
+            var url = $"https://maps.googleapis.com/maps/api/geocode/json?address={encodedAddress}&key={_apiKey}";
+
+            var response = await _httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadAsStringAsync();
+        }
+
+
     }
 }

@@ -1,9 +1,11 @@
 ﻿using API.Services;
 using DTO;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [EnableCors("DemoPolicy")]
     [ApiController]
     [Route("api/[controller]")]
     public class MapsController : ControllerBase
@@ -50,7 +52,6 @@ namespace API.Controllers
 
             try
             {
-                // Basic validation (helps avoid nonsense calls)
                 if (latitude == 0 || longitude == 0)
                 {
                     response.Result = "error";
@@ -77,6 +78,24 @@ namespace API.Controllers
             }
 
             return response;
+        }
+
+        [HttpGet("GeocodeRaw")]
+        public async Task<IActionResult> GeocodeRaw([FromQuery] string address)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(address))
+                    return BadRequest("Address is required.");
+
+                var result = await _googleMapsService.GeocodeAddressRawAsync(address);
+
+                return Content(result, "application/json");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }
