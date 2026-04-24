@@ -19,5 +19,7 @@ namespace DTO
         public string UsoSueloOriginal { get; set; }
         public string Estado { get; set; } = "Pendiente";
         public string DistritoTexto { get; set; }
+        public string? FotosUrls { get; set; }
+        public string? DocumentosUrls { get; set; }
     }
 }
