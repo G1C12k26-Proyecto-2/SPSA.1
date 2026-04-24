@@ -1,9 +1,6 @@
 using API.Config;
+using API.Interfaces;
 using API.Services;
-using AppLogic;
-using AppLogic.Interfaces;
-using API.Interfaces;       
-using API.Services;         
 using AppLogic;
 using AppLogic.Interfaces;
 using CloudinaryDotNet;
@@ -24,9 +21,11 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<IUserManager, UserManager>();
 builder.Services.AddSingleton<IAuthManager, AuthManager>();
-builder.Services.AddSingleton<IEmailService, EmailService>();
+builder.Services.AddSingleton<AppLogic.Interfaces.IEmailService, EmailService>();
 builder.Services.AddSingleton<ISolicitudManager, SolicitudManager>();
 builder.Services.AddHttpClient<GoogleMapsService>();
+builder.Services.AddSingleton<IUbicacionesManager, UbicacionesManager>();
+builder.Services.AddSingleton<IIngenieroManager, IngenieroManager>();
 
 // ========== CLOUDINARY ==========
 var cloudinaryAccount = new Account(
