@@ -24,22 +24,12 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<IUserManager, UserManager>();
 builder.Services.AddSingleton<IAuthManager, AuthManager>();
-builder.Services.AddHttpClient<GoogleMapsService>();
-builder.Services.AddSingleton<IIngenieroManager, IngenieroManager>();
-builder.Services.AddSingleton<AppLogic.Interfaces.IEmailService, EmailService>();
+builder.Services.AddSingleton<IDashboardManager, DashboardManager>();
+builder.Services.AddSingleton<IEmailService, EmailService>();
+builder.Services.AddSingleton<IAuditoriaManager, AuditoriaManager>();
+builder.Services.AddSingleton<IReportesManager,  ReportesManager>();
+builder.Services.AddSingleton<IPagoManager,  PagoManager>();
 
-// ========== CLOUDINARY ==========
-var cloudinaryAccount = new Account(
-    builder.Configuration["Cloudinary:CloudName"],
-    builder.Configuration["Cloudinary:ApiKey"],
-    builder.Configuration["Cloudinary:ApiSecret"]
-);
-var cloudinary = new Cloudinary(cloudinaryAccount);
-builder.Services.AddSingleton(cloudinary);
-builder.Services.AddSingleton<CloudinaryStorageService>();
-builder.Services.AddSingleton<API.Interfaces.ICloudinaryStorageService>(p => p.GetRequiredService<CloudinaryStorageService>());
-builder.Services.AddSingleton<AppLogic.Interfaces.ICloudinaryStorageService>(p => p.GetRequiredService<CloudinaryStorageService>());
-// =================================
 
 builder.Services.AddCors(options =>
 {
@@ -72,5 +62,8 @@ else
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
+app.UseCors("DemoPolicy");
+
 app.UseCors("DemoPolicy"); // 👈 también fix aquí, faltaba el nombre de la política
 app.Run();
