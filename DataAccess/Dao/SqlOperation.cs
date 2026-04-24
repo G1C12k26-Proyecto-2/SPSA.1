@@ -27,6 +27,9 @@ public class SqlOperation
     {
         Parameters.Add(new SqlParameter("@" + parameterName, parameterValue));
     }
+    public void AddDecimalParam(string paramName, decimal value)
+    {
+        Parameters.Add(new SqlParameter("@" + paramName, value));
     public void AddDecimalParam(string parameterName, decimal parameterValue)
     {
         Parameters.Add(new SqlParameter("@" + parameterName, parameterValue));
