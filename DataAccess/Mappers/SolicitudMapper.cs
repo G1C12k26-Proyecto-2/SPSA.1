@@ -62,6 +62,12 @@ namespace DataAccess.Mappers
             if (s.IdProvincia.HasValue) op.AddIntParam("IdProvincia", s.IdProvincia.Value);
             if (s.IdCanton.HasValue) op.AddIntParam("IdCanton", s.IdCanton.Value);
             if (s.IdDistrito.HasValue) op.AddIntParam("IdDistrito", s.IdDistrito.Value);
+            if (s.HectareasOriginal.HasValue) op.AddDecimalParam("HectareasOriginal", s.HectareasOriginal.Value);
+            if (!string.IsNullOrEmpty(s.PendienteOriginal)) op.AddVarcharParam("PendienteOriginal", s.PendienteOriginal);
+            if (!string.IsNullOrEmpty(s.TipoVegetacionOriginal)) op.AddVarcharParam("TipoVegetacionOriginal", s.TipoVegetacionOriginal);
+            op.AddIntParam("TieneRiosQuebradasOriginal", s.TieneRiosQuebradasOriginal ? 1 : 0);
+            op.AddIntParam("CantidadNacientesOriginal", s.CantidadNacientesOriginal);
+            if (!string.IsNullOrEmpty(s.UsoSueloOriginal)) op.AddVarcharParam("UsoSueloOriginal", s.UsoSueloOriginal);
             return op;
         }
 
