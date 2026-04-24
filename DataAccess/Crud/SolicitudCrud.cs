@@ -14,14 +14,7 @@ namespace DataAccess.Crud
             _sqlDao = SqlDao.GetInstance();
         }
 
-        public override void Create(BaseClass dto)
-        {
-            var solicitud = (CreateSolicitudDTO)dto;
-            var operation = _mapper.GetCreateStatement(dto);
-            operation.AddVarcharParam("FotosUrls", solicitud.FotosUrls ?? "");
-            operation.AddVarcharParam("DocumentosUrls", solicitud.DocumentosUrls ?? "");
-            _sqlDao.ExecuteProcedure(operation);
-        }
+        public override void Create(BaseClass dto) => _sqlDao.ExecuteProcedure(_mapper.GetCreateStatement(dto));
 
         public override void Update(BaseClass dto)
             => _sqlDao.ExecuteProcedure(_mapper.GetUpdateStatement(dto));

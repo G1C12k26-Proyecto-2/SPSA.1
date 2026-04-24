@@ -71,6 +71,8 @@ namespace DataAccess.Mappers
             if (!string.IsNullOrEmpty(s.UsoSueloOriginal)) op.AddVarcharParam("UsoSueloOriginal", s.UsoSueloOriginal);
             op.AddVarcharParam("Estado", string.IsNullOrEmpty(s.Estado) ? "Pendiente" : s.Estado);
             if (!string.IsNullOrEmpty(s.DistritoTexto)) op.AddVarcharParam("DistritoTexto", s.DistritoTexto);
+            if (!string.IsNullOrEmpty(s.FotosUrls)) op.AddVarcharParam("FotosUrls", s.FotosUrls);
+            if (!string.IsNullOrEmpty(s.DocumentosUrls)) op.AddVarcharParam("DocumentosUrls", s.DocumentosUrls);
             return op;
         }
 
