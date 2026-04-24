@@ -152,7 +152,7 @@ namespace API.Controllers
         }
 
         [HttpPost("visita/programar")]
-        public async Task<IActionResult> ProgramarVisita([FromBody] ProgramarVisitaRequestDTO request)
+        public async Task<IActionResult> ProgramarVisita(int ingenieroId, [FromBody] ProgramarVisitaRequestDTO request)
         {
             try
             {
@@ -232,7 +232,7 @@ namespace API.Controllers
         }
 
         [HttpPost("realizar-visita/guardar")]
-        public async Task<IActionResult> GuardarRealizarVisita([FromBody] RealizarVisitaRequestDTO request)
+        public async Task<IActionResult> GuardarRealizarVisita(int ingenieroId,[FromBody] RealizarVisitaRequestDTO request)
         {
             try
             {
