@@ -23,7 +23,7 @@ namespace AppLogic
 
             var user = userCrud.RetrieveByUsername<User>(username);
 
-            if (user == null || !user.Active)
+            if (user == null)
                 return null;
 
             bool valid = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
@@ -31,7 +31,7 @@ namespace AppLogic
             if (!valid)
                 return null;
 
-            return user;    
+            return user;
         }
 
         public List<User> RetrieveAllUsers()
