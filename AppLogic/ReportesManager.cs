@@ -6,6 +6,7 @@ namespace AppLogic
     public interface IReportesManager
     {
         List<ReportesSolicitudesDTO> GetReportesSolicitudes();
+        void UpdateStatusSolicitud(UpdateStatusDTO dto);
     }
 
     public class ReportesManager : IReportesManager
@@ -14,6 +15,12 @@ namespace AppLogic
         {
             var crud = new ReportesCrud();
             return crud.GetReportesSolicitudes();
+        }
+
+        public void UpdateStatusSolicitud(UpdateStatusDTO dto)
+        {
+            var crud = new UpdateStatusCrud();
+            crud.UpdateStatus(dto);
         }
     }
 }

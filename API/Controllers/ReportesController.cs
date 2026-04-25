@@ -31,5 +31,23 @@ namespace API.Controllers
             }
             return response;
         }
+
+        [HttpPost("UpdateStatus")]
+        public ApiResponse UpdateStatus([FromBody] UpdateStatusDTO dto)
+        {
+            var response = new ApiResponse();
+            try
+            {
+                _reportesManager.UpdateStatusSolicitud(dto);
+                response.Result = "ok";
+                response.Message = "Estado actualizado correctamente";
+            }
+            catch (Exception ex)
+            {
+                response.Result = "error";
+                response.Message = ex.Message;
+            }
+            return response;
+        }
     }
 }
