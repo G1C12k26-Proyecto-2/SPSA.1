@@ -39,5 +39,26 @@ public class SqlOperation
     {
         Parameters.Add(new SqlParameter("@" + parameterName, parameterValue));
     }
+
+
+    public void AddIntegerParam(string paramName, int value)
+    {
+        this.Parameters.Add(new SqlParameter
+        {
+            ParameterName = paramName,
+            Value = value,
+            DbType = System.Data.DbType.Int32
+        });
+    }
+
+    public void AddBooleanParam(string paramName, bool value)
+    {
+        this.Parameters.Add(new SqlParameter
+        {
+            ParameterName = paramName,
+            Value = value,
+            DbType = System.Data.DbType.Boolean
+        });
+    }
 }
 

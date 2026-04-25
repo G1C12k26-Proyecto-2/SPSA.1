@@ -111,7 +111,22 @@ namespace AppLogic
             {
                 throw new Exception("User updated, but email failed: " + ex.Message);
             }
+
         }
+
+        public void DeactivateUser(int id)
+        {
+            var userCrud = new UserCrud();
+            userCrud.DeactivateUser(id);        
+        }
+
+        public void ActivateUser(int id)
+        {
+            var userCrud = new UserCrud();
+            userCrud.ActivateUser(id);
+        }
+
+
     }
 }
 

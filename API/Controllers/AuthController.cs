@@ -157,6 +157,7 @@ namespace API.Controllers
                 response.Data = users.Select(user => new UserResponseDTO
                 {
                     Id = user.Id,
+                    Active = user.Active,
                     UserName = user.UserName,
                     FullName = user.FullName,
                     Email = user.Email,
@@ -194,7 +195,49 @@ namespace API.Controllers
             return response;
 
         }
-        
-        
+
+        [HttpPut("DeactivateUser/{id}")]
+        public ApiResponse DeactivateUser(int id)
+        {
+            var response = new ApiResponse();
+
+            try
+            {
+                _userManager.DeactivateUser(id);
+
+                response.Result = "ok";
+                response.Message = "User deactivated successfully";
+            }
+            catch (Exception ex)
+            {
+                response.Result = "error";
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
+        [HttpPut("ActivateUser/{id}")]
+        public ApiResponse ActivateUser(int id)
+        {
+            var response = new ApiResponse();
+
+            try
+            {
+                _userManager.ActivateUser(id);
+
+                response.Result = "ok";
+                response.Message = "User activated successfully";
+            }
+            catch (Exception ex)
+            {
+                response.Result = "error";
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
+
     }
 }

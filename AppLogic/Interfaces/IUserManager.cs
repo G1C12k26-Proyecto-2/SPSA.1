@@ -12,7 +12,11 @@ namespace AppLogic.Interfaces
         void CreateUser(CreateUserDTO newUser, string rol);
         List<User> RetrieveAllUsers();
         void UpdateUser(UpdateUserDTO updatedUser);
-       
+
+        void DeactivateUser(int id);
+
+        void ActivateUser(int id);
+
     }
 
 }

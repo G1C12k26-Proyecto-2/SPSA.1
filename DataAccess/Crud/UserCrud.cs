@@ -111,5 +111,29 @@ namespace DataAccess.Crud
 
             return default(T);
         }
+
+        public void DeactivateUser(int id)
+        {
+            var operation = new SqlOperation
+            {
+                ProcedureName = "SP_DEACTIVATE_USER"
+            };
+
+            operation.AddIntegerParam("Id", id);
+
+            _sqlDao.ExecuteProcedure(operation);
+        }
+
+        public void ActivateUser(int id)
+        {
+            var operation = new SqlOperation
+            {
+                ProcedureName = "SP_ACTIVATE_USER"
+            };
+
+            operation.AddIntegerParam("Id", id);
+
+            _sqlDao.ExecuteProcedure(operation);
+        }
     }
 }
