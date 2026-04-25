@@ -26,6 +26,7 @@ builder.Services.AddHttpClient<GoogleMapsService>();
 builder.Services.AddSingleton<IIngenieroManager, IngenieroManager>();
 builder.Services.AddSingleton<ISolicitudManager, SolicitudManager>();
 
+builder.Services.AddSingleton<DatosBancariosManager>();
 builder.Services.AddSingleton<IAuditoriaManager, AuditoriaManager>();
 builder.Services.AddSingleton<IReportesManager,  ReportesManager>();
 builder.Services.AddSingleton<IPagoManager,  PagoManager>();
