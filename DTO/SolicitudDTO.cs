@@ -31,6 +31,8 @@ namespace DTO
         public bool? CalificaParaPago { get; set; }
         public DateTime? FechaVisitaReal { get; set; }
         public string IngenieroNombre { get; set; }
-        public string DistritoTexto { get; set; } 
+        public string DistritoTexto { get; set; }
+        public List<string> FotosUrls { get; set; } = new();
+        public List<string> DocumentosUrls { get; set; } = new();
     }
 }

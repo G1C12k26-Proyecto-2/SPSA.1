@@ -44,6 +44,12 @@ namespace DataAccess.Mappers
                 CalificaParaPago = row.ContainsKey("CalificaParaPago") && row["CalificaParaPago"] != DBNull.Value ? Safe<bool>(row, "CalificaParaPago") : (bool?)null,
                 FechaVisitaReal = row.ContainsKey("FechaVisitaReal") && row["FechaVisitaReal"] != DBNull.Value ? Safe<DateTime>(row, "FechaVisitaReal") : (DateTime?)null,
                 IngenieroNombre = Safe<string>(row, "IngenieroNombre"),
+                FotosUrls = row.ContainsKey("FotosUrls") && row["FotosUrls"] != DBNull.Value
+                    ? System.Text.Json.JsonSerializer.Deserialize<List<string>>(Safe<string>(row, "FotosUrls")) ?? new()
+                    : new(),
+                DocumentosUrls = row.ContainsKey("DocumentosUrls") && row["DocumentosUrls"] != DBNull.Value
+                    ? System.Text.Json.JsonSerializer.Deserialize<List<string>>(Safe<string>(row, "DocumentosUrls")) ?? new()
+                    : new(),
             };
         }
 
