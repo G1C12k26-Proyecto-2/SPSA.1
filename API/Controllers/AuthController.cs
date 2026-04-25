@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace API.Controllers
 {
-    [EnableCors("DemoPolicy")]
+    
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -21,8 +21,9 @@ namespace API.Controllers
             _authManager = authManager;
         }
 
-        [HttpPost("Login")]
-        public ApiResponse Login([FromBody] LoginDTO login)
+        [HttpPost]
+        [Route("Login")]
+        public ApiResponse Login(LoginDTO login)
         {
             var response = new ApiResponse();
 
@@ -45,6 +46,7 @@ namespace API.Controllers
                     Email = user.Email,
                     Rol = user.Rol
                 };
+
                 response.Result = "ok";
             }
             catch (Exception ex)

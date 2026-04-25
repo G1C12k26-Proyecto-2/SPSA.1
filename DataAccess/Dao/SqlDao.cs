@@ -19,14 +19,6 @@ namespace DataAccess.Dao
             return instance;
         }
 
-        /*
-                C  ->  void
-                R  ->  result
-                U  ->  void
-                D  ->  void
-         */
-
-        // este ejecuta  CREATE, UPDATE, DELETE
         public void ExecuteProcedure(SqlOperation pOperation)
         {
             try
@@ -46,6 +38,34 @@ namespace DataAccess.Dao
                 sqlConnection.Open();
                 cmd.ExecuteNonQuery();
                 sqlConnection.Close();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public object ExecuteProcedureScalar(SqlOperation pOperation)
+        {
+            try
+            {
+                SqlConnection sqlConnection = new SqlConnection(connectionString);
+
+                SqlCommand cmd = sqlConnection.CreateCommand();
+                cmd.Connection = sqlConnection;
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.CommandText = pOperation.ProcedureName;
+
+                foreach (var param in pOperation.Parameters)
+                {
+                    cmd.Parameters.Add(param);
+                }
+
+                sqlConnection.Open();
+                var result = cmd.ExecuteScalar();
+                sqlConnection.Close();
+
+                return result;
             }
             catch (Exception e)
             {
@@ -78,7 +98,6 @@ namespace DataAccess.Dao
                     while (reader.Read())
                     {
                         var row = new Dictionary<string, object>();
-                        //Recorre el reader en cada fila y obtiene los campos de forma que se almacenan ["nombre", valor]
                         for (int i = 0; i < reader.FieldCount; i++)
                         {
                             row.Add(reader.GetName(i), reader.GetValue(i));
