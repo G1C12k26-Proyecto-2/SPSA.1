@@ -24,6 +24,7 @@ builder.Services.AddSingleton<IAuthManager, AuthManager>();
 builder.Services.AddSingleton<AppLogic.Interfaces.IEmailService, EmailService>();
 builder.Services.AddHttpClient<GoogleMapsService>();
 builder.Services.AddSingleton<IIngenieroManager, IngenieroManager>();
+builder.Services.AddSingleton<ISolicitudManager, SolicitudManager>();
 
 builder.Services.AddSingleton<IAuditoriaManager, AuditoriaManager>();
 builder.Services.AddSingleton<IReportesManager,  ReportesManager>();
