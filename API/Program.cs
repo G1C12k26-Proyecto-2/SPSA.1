@@ -1,9 +1,6 @@
 using API.Config;
+using API.Interfaces;
 using API.Services;
-using AppLogic;
-using AppLogic.Interfaces;
-using API.Interfaces;       
-using API.Services;         
 using AppLogic;
 using AppLogic.Interfaces;
 using CloudinaryDotNet;
@@ -24,9 +21,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<IUserManager, UserManager>();
 builder.Services.AddSingleton<IAuthManager, AuthManager>();
-builder.Services.AddSingleton<IDashboardManager, DashboardManager>();
+builder.Services.AddSingleton<IEmailService, EmailService>();
+builder.Services.AddHttpClient<GoogleMapsService>();
 builder.Services.AddSingleton<IIngenieroManager, IngenieroManager>();
-builder.Services.AddSingleton<AppLogic.Interfaces.IEmailService, EmailService>();
 
 builder.Services.AddSingleton<IAuditoriaManager, AuditoriaManager>();
 builder.Services.AddSingleton<IReportesManager,  ReportesManager>();
