@@ -29,6 +29,7 @@ builder.Services.AddSingleton<ISolicitudManager, SolicitudManager>();
 builder.Services.AddSingleton<IAuditoriaManager, AuditoriaManager>();
 builder.Services.AddSingleton<IReportesManager,  ReportesManager>();
 builder.Services.AddSingleton<IPagoManager,  PagoManager>();
+builder.Services.AddSingleton<IUbicacionesManager, UbicacionesManager>();
 
 // ========== CLOUDINARY ==========
 var cloudinaryAccount = new Account(
