@@ -40,6 +40,17 @@ namespace AppLogic
             return crud.RetrieveAll<User>();
         }
 
+        public User RetrieveUserById(int id)
+        {
+            var userCrud = new UserCrud();
+            var result = userCrud.RetrieveById<User>(id);
+
+            if (result == null || result.Count == 0)
+                return null;
+
+            return result[0];
+        }
+
         public void CreateUser(CreateUserDTO newUser, string rol)
         {
             var crud = new UserCrud();

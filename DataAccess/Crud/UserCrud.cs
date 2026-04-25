@@ -73,6 +73,7 @@ namespace DataAccess.Crud
             return resultList;
         }
 
+
         public void UpdatePassword(int userId, string passwordHash)
         {
             var sqlOperation = new SqlOperation()

@@ -175,6 +175,43 @@ namespace API.Controllers
             return response;
         }
 
+        [HttpGet("GetUserById/{id}")]
+        public ApiResponse GetUserById(int id)
+        {
+            var response = new ApiResponse();
+
+            try
+            {
+                var user = _userManager.RetrieveUserById(id);
+
+                if (user == null)
+                {
+                    response.Result = "error";
+                    response.Message = "User not found";
+                    return response;
+                }
+
+                response.Data = new UserResponseDTO
+                {
+                    Id = user.Id,
+                    Active = user.Active,
+                    UserName = user.UserName,
+                    FullName = user.FullName,
+                    Email = user.Email,
+                    Rol = user.Rol
+                };
+
+                response.Result = "ok";
+            }
+            catch (Exception ex)
+            {
+                response.Result = "error";
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
         [HttpPut("UpdateUser")]
         public ApiResponse UpdateUser([FromBody] UpdateUserDTO updatedUser)
         {
