@@ -60,7 +60,8 @@ namespace API.Services
                         Folder = folder ?? "general",
                         UseFilename = true,
                         UniqueFilename = true,
-                        Overwrite = false
+                        Overwrite = false,
+                        AccessMode = "public"
                     };
 
                     var uploadResult = await _cloudinary.UploadAsync(uploadParams);
@@ -73,7 +74,7 @@ namespace API.Services
                     }
 
                     response.PublicId = uploadResult.PublicId;
-                    response.Url = uploadResult.Url?.ToString() ?? string.Empty;
+                    response.Url = uploadResult.SecureUrl?.ToString() ?? uploadResult.Url?.ToString() ?? string.Empty;
                     response.Success = true;
                 }
                 else
@@ -84,7 +85,8 @@ namespace API.Services
                         Folder = folder ?? "documents",
                         UseFilename = true,
                         UniqueFilename = true,
-                        Overwrite = false
+                        Overwrite = false,
+                        AccessMode = "public"
                     };
 
                     var uploadResult = await _cloudinary.UploadAsync(uploadParams);
@@ -97,7 +99,7 @@ namespace API.Services
                     }
 
                     response.PublicId = uploadResult.PublicId;
-                    response.Url = uploadResult.Url?.ToString() ?? string.Empty;
+                    response.Url = uploadResult.SecureUrl?.ToString() ?? uploadResult.Url?.ToString() ?? string.Empty;
                     response.Success = true;
                 }
 
