@@ -23,7 +23,7 @@ namespace AppLogic
 
             var user = userCrud.RetrieveByUsername<User>(username);
 
-            if (user == null || !user.Active)
+            if (user == null)
                 return null;
 
             bool valid = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
@@ -31,13 +31,24 @@ namespace AppLogic
             if (!valid)
                 return null;
 
-            return user;    
+            return user;
         }
 
         public List<User> RetrieveAllUsers()
         {
             var crud = new UserCrud();
             return crud.RetrieveAll<User>();
+        }
+
+        public User RetrieveUserById(int id)
+        {
+            var userCrud = new UserCrud();
+            var result = userCrud.RetrieveById<User>(id);
+
+            if (result == null || result.Count == 0)
+                return null;
+
+            return result[0];
         }
 
         public void CreateUser(CreateUserDTO newUser, string rol)
@@ -111,7 +122,22 @@ namespace AppLogic
             {
                 throw new Exception("User updated, but email failed: " + ex.Message);
             }
+
         }
+
+        public void DeactivateUser(int id)
+        {
+            var userCrud = new UserCrud();
+            userCrud.DeactivateUser(id);        
+        }
+
+        public void ActivateUser(int id)
+        {
+            var userCrud = new UserCrud();
+            userCrud.ActivateUser(id);
+        }
+
+
     }
 }
 

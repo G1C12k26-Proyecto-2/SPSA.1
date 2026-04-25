@@ -4,7 +4,9 @@ namespace DataAccess.Dao
 {
     public class SqlDao
     {
-        private string connectionString = "Server=tcp:spsadb.database.windows.net,1433;Initial Catalog=spsadb;Persist Security Info=False;User ID=spsadmin;Password=Password!123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+        private string connectionString = "Data Source=tcp:spsadb.database.windows.net,1433;Initial Catalog=spsadb;Persist Security Info=True;User ID=spsadmin;Password=Password!123;Pooling=False;MultipleActiveResultSets=False;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;Command Timeout=0";
+        // private string connectionString = "Server=.;Database=MedicalSolutionsDB;Trusted_Connection=True;TrustServerCertificate=True;";
+        //para conectar con el usuario y la contraseña de la base de datos
 
         private static SqlDao? instance;
 

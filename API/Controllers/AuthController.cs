@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace API.Controllers
 {
-    [EnableCors("DemoPolicy")]
+    
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -21,8 +21,9 @@ namespace API.Controllers
             _authManager = authManager;
         }
 
-        [HttpPost("Login")]
-        public ApiResponse Login([FromBody] LoginDTO login)
+        [HttpPost]
+        [Route("Login")]
+        public ApiResponse Login(LoginDTO login)
         {
             var response = new ApiResponse();
 
@@ -45,6 +46,7 @@ namespace API.Controllers
                     Email = user.Email,
                     Rol = user.Rol
                 };
+
                 response.Result = "ok";
             }
             catch (Exception ex)
@@ -155,11 +157,49 @@ namespace API.Controllers
                 response.Data = users.Select(user => new UserResponseDTO
                 {
                     Id = user.Id,
+                    Active = user.Active,
                     UserName = user.UserName,
                     FullName = user.FullName,
                     Email = user.Email,
                     Rol = user.Rol
                 }).ToList();
+
+                response.Result = "ok";
+            }
+            catch (Exception ex)
+            {
+                response.Result = "error";
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
+        [HttpGet("GetUserById/{id}")]
+        public ApiResponse GetUserById(int id)
+        {
+            var response = new ApiResponse();
+
+            try
+            {
+                var user = _userManager.RetrieveUserById(id);
+
+                if (user == null)
+                {
+                    response.Result = "error";
+                    response.Message = "User not found";
+                    return response;
+                }
+
+                response.Data = new UserResponseDTO
+                {
+                    Id = user.Id,
+                    Active = user.Active,
+                    UserName = user.UserName,
+                    FullName = user.FullName,
+                    Email = user.Email,
+                    Rol = user.Rol
+                };
 
                 response.Result = "ok";
             }
@@ -192,7 +232,49 @@ namespace API.Controllers
             return response;
 
         }
-        
-        
+
+        [HttpPut("DeactivateUser/{id}")]
+        public ApiResponse DeactivateUser(int id)
+        {
+            var response = new ApiResponse();
+
+            try
+            {
+                _userManager.DeactivateUser(id);
+
+                response.Result = "ok";
+                response.Message = "User deactivated successfully";
+            }
+            catch (Exception ex)
+            {
+                response.Result = "error";
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
+        [HttpPut("ActivateUser/{id}")]
+        public ApiResponse ActivateUser(int id)
+        {
+            var response = new ApiResponse();
+
+            try
+            {
+                _userManager.ActivateUser(id);
+
+                response.Result = "ok";
+                response.Message = "User activated successfully";
+            }
+            catch (Exception ex)
+            {
+                response.Result = "error";
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
+
     }
 }
