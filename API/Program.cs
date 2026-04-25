@@ -24,6 +24,7 @@ builder.Services.AddSingleton<IAuthManager, AuthManager>();
 builder.Services.AddSingleton<AppLogic.Interfaces.IEmailService, EmailService>();
 builder.Services.AddHttpClient<GoogleMapsService>();
 builder.Services.AddSingleton<IIngenieroManager, IngenieroManager>();
+builder.Services.AddSingleton<ISolicitudManager, SolicitudManager>();
 
 builder.Services.AddSingleton<IAuditoriaManager, AuditoriaManager>();
 builder.Services.AddSingleton<IReportesManager,  ReportesManager>();
@@ -76,5 +77,4 @@ app.MapControllers();
 
 app.UseCors("DemoPolicy");
 
-app.UseCors("DemoPolicy"); // 👈 también fix aquí, faltaba el nombre de la política
 app.Run();
