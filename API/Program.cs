@@ -76,5 +76,4 @@ app.MapControllers();
 
 app.UseCors("DemoPolicy");
 
-app.UseCors("DemoPolicy"); // 👈 también fix aquí, faltaba el nombre de la política
 app.Run();
